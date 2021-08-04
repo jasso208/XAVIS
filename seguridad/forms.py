@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models  import Permission,User
 from empenos.models import *
-
+from seguridad.models.perfil import Perfil
 class Login_Form(forms.Form):
 	usuario=forms.CharField(max_length=30)
 	password=forms.CharField(max_length=30,widget=forms.PasswordInput)
