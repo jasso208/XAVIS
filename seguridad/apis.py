@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view,permission_classes
 import json
 from empenos.models import *
 from django.db import transaction
-
+from seguridad.models.user_2 import User_2
 @api_view(["POST","PUT"])
 @transaction.atomic
 def api_usuario(request):

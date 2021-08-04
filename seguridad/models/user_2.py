@@ -7,6 +7,10 @@ from datetime import date, datetime, time,timedelta
 from empenos.models import Cajas
 from seguridad.models.menu import Menu
 from seguridad.models.permisos_usuario import Permisos_Usuario
+from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.models import Token
+import json
+from rest_framework.response import Response
 #esta tabla es un complemento de la tabla user de django.
 class User_2(models.Model):
 	user=models.ForeignKey(User,on_delete=models.PROTECT,related_name = "usuario_sistema")
@@ -267,3 +271,56 @@ class User_2(models.Model):
 		for p in permisos:
 			resp.append(p.opcion_menu.id)
 		return resp
+#*********************************************************************************************
+#De aqui para abajo es para la version 2
+
+	#api para inciar session
+	#parametros 
+	#			request
+	# 						username
+	#						password	
+	#Return	
+	# 			estatus:	1 exito; 0 error;
+	# 			token:		Token para identificar al usuario logueado
+	# 			usuario:	Nombre del usuario al que corresponden las credenciales.
+	# 			sucursal:	Sucursal a la que pertenece el usuario.			
+	def inicia_session(request):
+		respuesta = {}
+		try:
+			username = request.data["username"]
+			password = request.data["password"]
+		except:
+			return {"estatus":"0","msj":"Bad Request."}
+
+
+		user = authenticate (request,username=username,password=password)
+
+		#si es none, es porque las credenciales son incorectas
+		if user == None:
+			respuesta = {"estatus":"0","msj":"El usuario y/o contraseña son incorrectos."}
+
+		else:
+			try:
+				Token.objects.get(user = user).delete()
+			except:
+				pass
+
+			token = Token.objects.create(user = user)
+			user2 = User_2.objects.get(user = user)
+			respuesta = {"estatus":"1","token":token.key,"usuario" : user.first_name + ' ' + user.last_name,"sucursal" : user2.sucursal.sucursal}
+
+			#respuesta.append({"usuario" : user.first_name + ' ' + user.last_name})
+			#respuesta.append({"sucursal" : user2.sucursal.sucursal})
+
+		return respuesta
+
+
+	def valida_sesion(token):		
+		respuesta = {}
+		try:
+			usuario = Token.objects.get(key = token).user
+			respuesta = {"estatus" : "1","usuario" : usuario.first_name + ' ' + usuario.last_name}
+
+		except:			
+			respuesta = {"estatus" : "0"}
+		return respuesta

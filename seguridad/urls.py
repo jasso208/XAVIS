@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from seguridad.views import *
 from seguridad.apis import *
+from seguridad.api_rest.login import Login
+
 app_name="seguridad"
 
 urlpatterns=[
@@ -48,7 +50,9 @@ urlpatterns=[
 	url(r'^api_permisos_usuario/$',api_permisos_usuario,name="api_permisos_usuario"),
 	url(r'^api_consulta_usuario/$',api_consulta_usuario,name="api_consulta_usuario"),
 
-
+	#*****************************************************************************************************************
+	#De aqui para abajo es para la migracion
+	url(r'^v2/inicia_session/$',Login.as_view()),
 
 ]
 

@@ -712,7 +712,7 @@ def api_direccion_envio_temporal(request):
 		print(e)
 		estatus.append({"estatus":"0","msj":"Error al guardar la direccion de envio,intente nuevamente."})
 	return Response(estatus)
-"""		
+	
 @api_view(['POST'])
 def api_e_mail_notificacion(request):
 	estatus=[]
@@ -731,7 +731,7 @@ def api_e_mail_notificacion(request):
 		print(e)
 		estatus.append({"estatus":"0","msj":"Ocurrio un Error al Subcribirte, Intentalo Nueva mente."})
 	return Response(estatus)
-	
+	"""	
 #esta api actualiza la contraseña, del cliente
 #	parametros
 #		session: recibe la session para obtener el correo del cliente que intenta cambiar contraseña
