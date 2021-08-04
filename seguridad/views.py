@@ -8,7 +8,8 @@ from django.contrib.auth import logout
 from django.urls import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from seguridad.models.user_2 import User_2
+from seguridad.models import Direccion_Envio_Cliente,Clientes_Logueados,Direccion_Envio_Cliente_Temporal
+from seguridad.models import E_Mail_Notificacion,Recupera_pws
 from django.core.mail import EmailMessage
 #from ventas.models import Venta,Detalle_Venta
 from django.conf import settings
@@ -17,7 +18,7 @@ import email.message
 from .forms import *
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models  import Permission,User
-from empenos.models import Cajas,Sucursal
+from empenos.models import User_2,Cajas,Perfil,Sucursal
 from datetime import date, datetime, time
 from random import randint
 
@@ -709,7 +710,7 @@ def api_direccion_envio_temporal(request):
 		print(e)
 		estatus.append({"estatus":"0","msj":"Error al guardar la direccion de envio,intente nuevamente."})
 	return Response(estatus)
-	
+"""		
 @api_view(['POST'])
 def api_e_mail_notificacion(request):
 	estatus=[]
@@ -728,7 +729,7 @@ def api_e_mail_notificacion(request):
 		print(e)
 		estatus.append({"estatus":"0","msj":"Ocurrio un Error al Subcribirte, Intentalo Nueva mente."})
 	return Response(estatus)
-	"""	
+	
 #esta api actualiza la contraseña, del cliente
 #	parametros
 #		session: recibe la session para obtener el correo del cliente que intenta cambiar contraseña

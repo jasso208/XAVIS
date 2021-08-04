@@ -28,7 +28,7 @@ import decimal
 import csv
 import smtplib
 import email.message
-from seguridad.models.user_2 import User_2
+
 IP_LOCAL = settings.IP_LOCAL
 LOCALHOST=settings.LOCALHOST
 IDENTIFICADOR_TIENDA = settings.IDENTIFICADOR_TIENDA
