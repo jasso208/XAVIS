@@ -8,8 +8,7 @@ from django.contrib.auth import logout
 from django.urls import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from seguridad.models import Direccion_Envio_Cliente,Clientes_Logueados,Direccion_Envio_Cliente_Temporal
-from seguridad.models import E_Mail_Notificacion,Recupera_pws
+
 from django.core.mail import EmailMessage
 #from ventas.models import Venta,Detalle_Venta
 from django.conf import settings
@@ -18,10 +17,11 @@ import email.message
 from .forms import *
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models  import Permission,User
-from empenos.models import User_2,Cajas,Perfil,Sucursal
+from empenos.models import Cajas,Sucursal
 from datetime import date, datetime, time
 from random import randint
-
+from seguridad.models.user_2 import User_2
+from seguridad.models.perfil import Perfil
 IP_LOCAL = settings.IP_LOCAL
 
 encabezado_link_consulta_venta_1="""
@@ -183,6 +183,8 @@ def admin_permisos_usuario(request):
 	if not user_2.fn_tiene_acceso_a_vista(3):
 		return HttpResponseRedirect(reverse('seguridad:sin_permiso_de_acceso'))
 
+	#validamos si el usuario tiene caja abierta
+	caja = user_2.fn_tiene_caja_abierta()
 	try:
 		c=caja.caja
 	except:
