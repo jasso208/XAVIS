@@ -319,7 +319,9 @@ class User_2(models.Model):
 		respuesta = {}
 		try:
 			usuario = Token.objects.get(key = token).user
-			respuesta = {"estatus" : "1","usuario" : usuario.first_name + ' ' + usuario.last_name}
+			sucursal = User_2.objects.get(user = usuario).sucursal.sucursal
+			
+			respuesta = {"estatus" : "1","usuario" : usuario.first_name + ' ' + usuario.last_name,"sucursal":sucursal}
 
 		except:			
 			respuesta = {"estatus" : "0"}

@@ -5,7 +5,7 @@ from rest_framework import status
 from seguridad.models.user_2 import User_2
 import json
 from rest_framework.authtoken.models import Token
-class Login(APIView):
+class LoginApi(APIView):
 
 	#para validar si el token corresponde a una session
 	#Parametros
@@ -35,9 +35,10 @@ class Login(APIView):
 	#parametros			
 	#			request
 	#					token	
-	def delete(self,request,format = None):		
+	def delete(self,request,token,format = None):		
 		try:
-			Token.objects.get(key = request.data["token"]).delete()
-		except:
-			pass
+			Token.objects.get(key = token).delete()
+		except Exception as e:
+			print(e)
+			pass		
 		return Response(json.dumps({"estatus":"1"}))

@@ -10,3 +10,4 @@ class Seccion(models.Model):
 
 	def __str__(self):
 		return str(self.id) + ' ' + self.desc_seccion
+
