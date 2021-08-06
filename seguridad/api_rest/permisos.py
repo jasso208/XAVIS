@@ -6,7 +6,10 @@ from rest_framework.authtoken.models import Token
 from seguridad.models.permisos_usuario import Permisos_Usuario
 
 class PermisosApi(APIView):
-
+    #parametros
+    #               token: El token del usuario que esta logueado
+    #return 
+    #               Regresa todas las opciones a las que tiene acceso el usuario.
     def get(self,request,format = None):
         token = request.GET.get("token")
         usuario = Token.objects.get(key = token).user

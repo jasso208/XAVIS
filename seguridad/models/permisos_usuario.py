@@ -20,18 +20,27 @@ class Permisos_Usuario(models.Model):
 	def idSeccion(self):
 		return self.opcion_menu.seccion.id
 
+
 	def getPermisos(usuario):
 		respuesta = []
 		opciones = []
-		secciones = Seccion.objects.all()
+		
+		secciones = Seccion.objects.all().order_by("orden")
 		for s in secciones:
 			permisos = Permisos_Usuario.objects.filter(opcion_menu__seccion = s,usuario = usuario)
-			
-			opciones = []
-			for p in permisos:
-				opciones.append({"id":p.opcion_menu.id,"opcion":p.opcion_menu.desc_item,"url_menu":p.opcion_menu.url_menu})
-			if permisos.exists():
-				respuesta.append({"id_seccion":s.id,"seccion":s.desc_seccion,"opciones":opciones})
 
+			op_aux = []#lista auxiliar que nos ayuda a ordenar los menus
+			for p in permisos:
+				op_aux.append(p.opcion_menu.id)
+
+			opciones = []
+			for m in Menu.objects.filter(id__in=op_aux).order_by("orden"):
+				opciones.append({"id":m.id,"opcion":m.desc_item,"url_menu":m.url_menu})
+			
+			if permisos.exists():
+				glyphicon="glyphicon glyphicon-asterisk"
+				if s.glyphicon != "":
+					glyphicon = s.glyphicon
+				respuesta.append({"id_seccion":s.id,"seccion":s.desc_seccion,"glyphicon":glyphicon,"opciones":opciones})
 		return respuesta
 
