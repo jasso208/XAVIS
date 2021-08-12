@@ -20,6 +20,15 @@ class Permisos_Usuario(models.Model):
 	def idSeccion(self):
 		return self.opcion_menu.seccion.id
 
+	def validaAccesoAVista(usuario,opcion):
+		try:
+			pu = Permisos_Usuario.objects.get(usuario = usuario,opcion_menu__id = opcion)
+			
+			return {"estatus":"1"}
+		except Exception as e:
+			
+			return {"estatus":"0","msj":"El usuario no tiene acceso a esta opcion"}	
+
 
 	def getPermisos(usuario):
 		respuesta = []
@@ -35,7 +44,7 @@ class Permisos_Usuario(models.Model):
 
 			opciones = []
 			for m in Menu.objects.filter(id__in=op_aux).order_by("orden"):
-				opciones.append({"id":m.id,"opcion":m.desc_item,"url_menu":m.url_menu})
+				opciones.append({"id":m.id,"opcion":m.desc_item,"url_menu":m.url_menu,"visible":m.visible})
 			
 			if permisos.exists():
 				glyphicon="glyphicon glyphicon-asterisk"

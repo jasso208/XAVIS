@@ -262,6 +262,9 @@ class User_2(models.Model):
 		return True
 
 
+
+#*********************************************************************************************
+#De aqui para abajo es para la version 2
 	###regresa una lista con todos los permsos del usuario
 	###se usa para laopcion "administra permisos de usuario"
 	###para cargar de inicio los permisos que ya tiene el usuario.
@@ -271,8 +274,6 @@ class User_2(models.Model):
 		for p in permisos:
 			resp.append(p.opcion_menu.id)
 		return resp
-#*********************************************************************************************
-#De aqui para abajo es para la version 2
 
 	#api para inciar session
 	#parametros 
