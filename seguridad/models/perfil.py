@@ -9,7 +9,6 @@ class Perfil(models.Model):
 	def __str__(self):
 		return str(self.id)+' '+self.perfil
 
-
 	def obtenerTodosPerfiles():
 		perfiles = Perfil.objects.all()
 		return perfiles

@@ -4,6 +4,7 @@ from seguridad.apis import *
 from seguridad.api_rest.login import LoginApi
 from seguridad.api_rest.user import UsuarioApi
 from seguridad.api_rest.perfil import PerfilApi
+from seguridad.api_rest.menu import MenuApi
 app_name="seguridad"
 
 urlpatterns=[
@@ -57,6 +58,8 @@ urlpatterns=[
 	url(r'^v2/cerrar_session/(?P<token>\w+)/',LoginApi.as_view()),
 	url(r'^v2/permisos/$',UsuarioApi.as_view()),	
 	url(r'^v2/perfiles/$',PerfilApi.as_view()),	
+	url(r'^v2/menu/$',MenuApi.as_view()),	
+	
 
 ]
 
