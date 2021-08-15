@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from empenos.models import Sucursal
+from seguridad.models.sucursal import Sucursal
 from seguridad.models.perfil import Perfil
 from datetime import date, datetime, time,timedelta
 from empenos.models import Cajas
@@ -11,10 +11,11 @@ from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
 import json
 from rest_framework.response import Response
+
 #esta tabla es un complemento de la tabla user de django.
 class User_2(models.Model):
 	user=models.ForeignKey(User,on_delete=models.PROTECT,related_name = "usuario_sistema")
-	sucursal=models.ForeignKey(Sucursal,on_delete=models.PROTECT)
+	sucursal=models.ForeignKey(Sucursal,on_delete=models.PROTECT,null=True,blank=True)
 	perfil=models.ForeignKey(Perfil,on_delete=models.PROTECT)
 	sesion=models.IntegerField(blank=True,null=True)
 	usuario_alta = models.ForeignKey(User,on_delete = models.PROTECT,related_name = "usuario_alta_usuario",blank = True,null = True)
@@ -110,74 +111,10 @@ class User_2(models.Model):
 			resp.append(False)
 			resp.append("Error al crear el usuario, intente nuevamente.")
 			return resp
-
 		return resp
 
 
-	def fn_edita_usuario(user_name,first_name,last_name,id_sucursal,id_perfil,id_usuario_alta,activo):
-		resp = []
-		if user_name == "" or user_name == None:
-			resp.append(False)
-			resp.append("El nombre de usuario es requerido.")
-			return resp
 
-
-
-		try:
-			sucursal = Sucursal.objects.get(id = id_sucursal)
-		except:
-			resp.append(False)
-			resp.append("Debe indicar una sucursal valida.")
-			return resp
-
-		try:
-			Perfil.objects.get(id = id_perfil)
-		except:
-			resp.append(False)
-			resp.append("Debe indicar un perfil valido.")
-			return resp
-
-
-		try:
-			usr_modifica = User.objects.get(id = int(id_usuario_alta))
-
-			usr_a_modificar = User.objects.get(username = user_name)
-
-			u2 = User_2.objects.get(user = usr_a_modificar)
-
-			if u2.fn_tiene_caja_abierta() != None:
-				resp.append(False)
-				resp.append("El usuario no puede ser modificado ya que cuenta con caja abierta.")
-				return resp
-
-
-			usr_a_modificar.first_name = first_name
-			usr_a_modificar.last_name = last_name
-
-			if activo == 0:
-				usr_a_modificar.is_active = False
-			else:				
-				usr_a_modificar.is_active = True
-
-			usr_a_modificar.save()
-
-			user_2 = User_2.objects.get(user = usr_a_modificar)
-			user_2.sucursal = Sucursal.objects.get(id = int(id_sucursal))
-			user_2.perfil = Perfil.objects.get(id = int(id_perfil))
-			user_2.usuario_modifica = usr_modifica
-			user_2.fecha_modificacion = timezone.now()
-
-			user_2.save()
-
-			resp.append(True)
-			resp.append("El usuario actualizo correctamente.")
-		except Exception as e:
-			print(e)
-			resp.append(False)
-			resp.append("Error al actualizar el usuario, intente nuevamente.")
-			return resp
-
-		return resp
 
 	def fn_agrega_acceso_a_vista(self,id_menu,id_usuario_asigna):
 

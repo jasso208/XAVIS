@@ -15,7 +15,7 @@ class PerfilService():
     #           opcion: La opcion el menu que se va a afectar
     #           agrega_permiso: true: agregar; false; quitar permiso de acceso a la opcion indicada.
     def editaPermisosPerfil(perfil,opcion,agrega_permiso):
-        print(agrega_permiso)
+        
         if agrega_permiso:
             try:
                 PermisosPerfil.objects.create(perfil = perfil,opcion = opcion)
