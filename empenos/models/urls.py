@@ -1,10 +1,10 @@
 from django.conf.urls import include, url
-
+from .views import *
 from .report import *
+from empenos.apis import *
 
 app_name="empenos"
-urlpatterns=[]
-"""
+
 urlpatterns=[
 	#formularios
 	url(r'^abrir_caja/$',abrir_caja,name="abrir_caja"),
@@ -120,4 +120,3 @@ urlpatterns=[
 
 
 ]
-"""

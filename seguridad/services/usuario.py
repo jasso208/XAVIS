@@ -7,7 +7,7 @@ from seguridad.models.permisos_usuario import Permisos_Usuario
 from seguridad.models.permisos_perfil import PermisosPerfil
 from seguridad.models.user_2 import User_2
 from django.contrib.auth.models import User
-from empenos.models import Sucursal
+from seguridad.models import Sucursal
 from seguridad.models.perfil import Perfil
 from django.utils import timezone
 
@@ -112,7 +112,7 @@ class UsuarioService():
         except:
             return False
 
-    def fn_edita_usuario(user_name,first_name,last_name,id_sucursal,id_perfil,id_usuario_alta,activo,email):
+    def fn_edita_usuario(user_name,first_name,last_name,id_sucursal,id_perfil,id_usuario_alta,activo,email,password):
         
         resp = []
         if user_name == "" or user_name == None:
@@ -156,7 +156,11 @@ class UsuarioService():
             else:				
                 usr_a_modificar.is_active = True
 
+            if password != "":#solo se modifica si nos envia un valor.
+                usr_a_modificar.set_password(password)
+
             usr_a_modificar.save()
+
 
             user_2 = User_2.objects.get(user = usr_a_modificar)
             user_2.sucursal = Sucursal.objects.get(id = int(id_sucursal))
@@ -191,3 +195,11 @@ class UsuarioService():
                 print(e)
                 pass
         return True
+
+    def cambiaPassword(user,password):
+        try:
+            user.set_password(password)
+            user.save()
+            return True
+        except:
+            return False

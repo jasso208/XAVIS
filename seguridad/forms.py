@@ -1,4 +1,4 @@
-from django import forms
+"""from django import forms
 from django.contrib.auth.models  import Permission,User
 from empenos.models import *
 from seguridad.models.perfil import Perfil
@@ -38,3 +38,4 @@ class Cambio_Sucursal_Form(forms.Form):
 	usuario=forms.ModelChoiceField(queryset=User.objects.all())
 	sucursal=forms.ModelChoiceField(queryset=Sucursal.objects.all())
 
+"""

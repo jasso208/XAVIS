@@ -55,6 +55,7 @@ class UsuarioApi(APIView):
 
     #actualizacion de usuario
     #Parametros:
+    #               tipo_accion: 1: actualizamos el usuario, 2:actualizamos solo la contraseña.
     #               id_usuario
     #               user_name
     #               first_name
@@ -64,25 +65,43 @@ class UsuarioApi(APIView):
     #               token
     #               email
     def put(self,request,format=None):
-        user_name  = request.data["user_name"]
-        first_name = request.data["first_name"]
-        last_name = request.data["last_name"]
-        id_sucursal = request.data["id_sucursal"]
-        id_perfil = request.data["id_perfil"]
+        tipo_accion = request.data["tipo_accion"]        
         token = request.data["token"]
-        email = request.data["email"]
-        activo = request.data["activo"]
-        try:
-            user_edita = Token.objects.get(key = token).user
-        except:
-            return Response({"estatus":"0","msj":"Inicie sesion para realizar esta acción."})    
+        password = request.data["password"]
+        print(tipo_accion)
+        if tipo_accion == "2":
+            try:
+                user = Token.objects.get(key = token).user
+                if UsuarioService.cambiaPassword(user,password):
+                    return Response({"estatus":"1"})
+                else:
+                    return Response({"estatus":"0","msj":"Error al actualizar la contraseña."})
 
-        res = UsuarioService.fn_edita_usuario(user_name,first_name,last_name,id_sucursal,id_perfil,user_edita.id,activo,email)
-        resp = {}
-        if res[0]:
-            resp = {"estatus":"1"}
+            except:
+                return Response({"estatus":"0","msj":"Inicie sesion para realizar esta acción."})    
+
+        elif tipo_accion == "1":
+            user_name  = request.data["user_name"]
+            first_name = request.data["first_name"]
+            last_name = request.data["last_name"]
+            id_sucursal = request.data["id_sucursal"]
+            id_perfil = request.data["id_perfil"]
+            
+            email = request.data["email"]
+            activo = request.data["activo"]
+            try:
+                user_edita = Token.objects.get(key = token).user
+            except:
+                return Response({"estatus":"0","msj":"Inicie sesion para realizar esta acción."})    
+
+            res = UsuarioService.fn_edita_usuario(user_name,first_name,last_name,id_sucursal,id_perfil,user_edita.id,activo,email,password)
+            resp = {}
+            if res[0]:
+                resp = {"estatus":"1"}
+            else:
+                resp = {"estatus":"0","msj":res[1]}
+            return Response(resp)
         else:
-            resp = {"estatus":"0","msj":res[1]}
-        return Response(resp)
+            return Response({"estatus":"0","msj":"Error al realizar la accion."})
 
 

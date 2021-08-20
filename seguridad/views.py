@@ -333,12 +333,6 @@ def cambio_psw_usr(request):
 	IP_LOCAL = settings.IP_LOCAL
 	id_usuario=user_2.user.id
 
-
-
-
-	
-
-
 	if request.method=="POST":
 		
 		psw=request.POST.get("psw")

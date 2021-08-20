@@ -1,4 +1,4 @@
-from django import forms
+"""from django import forms
 from django.forms.models import inlineformset_factory
 from empenos.models import *
 from datetime import date, datetime, time
@@ -241,3 +241,4 @@ class Cliente_Form(forms.ModelForm):
 		model=Cliente
 		fields=('nombre','apellido_p','apellido_m','genero','estado_civil','codigo_postal','calle','numero_interior','numero_exterior','colonia','ciudad','estado','pais','telefono_fijo','telefono_celular','usuario',)
 
+"""
