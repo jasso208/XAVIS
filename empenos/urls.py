@@ -1,9 +1,12 @@
 from django.conf.urls import include, url
-
+from empenos.api_rest.dia_no_laboral_api import DiaNoLaboralApi
 from .report import *
 
 app_name="empenos"
-urlpatterns=[]
+urlpatterns=[
+	url(r'^v2/dia_no_laboral/$',DiaNoLaboralApi.as_view()),
+	url(r'^v2/dia_no_laboral/(?P<id_fecha>\w+)/',DiaNoLaboralApi.as_view())
+]
 """
 urlpatterns=[
 	#formularios

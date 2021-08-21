@@ -14,7 +14,7 @@ from .tipo_producto import Tipo_Producto
 from .linea import Linea
 from .sub_linea import Sub_Linea
 from .marca import Marca
-from .costo_kilataje import Costo_Kilataje
+from .kilataje import Kilataje
 from .empenos_temporal import Empenos_Temporal
 from .joyeria_empenos_temporal import Joyeria_Empenos_Temporal
 from .plazo import Plazo

@@ -1,5 +1,6 @@
 from django.db import models
-from empenos.models.costo_kilataje import Costo_Kilataje
+from empenos.models import kilataje
+from empenos.models.kilataje import Kilataje
 from empenos.models.sub_linea import Sub_Linea
 from empenos.models.boleta_empeno import Boleta_Empeno
 from empenos.models.tipo_producto import Tipo_Producto
@@ -13,7 +14,7 @@ class Det_Boleto_Empeno(models.Model):
 	sub_linea=models.ForeignKey(Sub_Linea,on_delete=models.PROTECT)	
 	marca=models.ForeignKey(Marca,on_delete=models.PROTECT)
 	descripcion=models.CharField(max_length=50,null=False)
-	costo_kilataje=models.ForeignKey(Costo_Kilataje,on_delete=models.PROTECT,blank=True,null=True)
+	kilataje=models.ForeignKey(Kilataje,on_delete=models.PROTECT,blank=True,null=True)
 	peso=models.DecimalField(max_digits=20,decimal_places=2,default=0.00,null=True,blank=True)
 	avaluo=models.IntegerField()
 	mutuo_sugerido=models.IntegerField()
