@@ -6,7 +6,7 @@ class Kilataje(models.Model):
 	tipo_producto = models.ForeignKey(Tipo_Producto,on_delete=models.PROTECT,blank=True,null=False)
 	kilataje = models.CharField(max_length=10,null=False)
 	avaluo = models.DecimalField(max_digits=20,decimal_places=2,default=0.00)
-	tipo_kilataje = models.ForeignKey(Tipo_Kilataje,on_delete=models.PROTECT,blank=True,null=True)
+	tipo_kilataje = models.ForeignKey(Tipo_Kilataje,on_delete=models.PROTECT,default = 2)
 	activo = models.CharField(max_length=1,default="S")
 	
 	def __str__(self):

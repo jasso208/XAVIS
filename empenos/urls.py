@@ -1,12 +1,16 @@
 from django.conf.urls import include, url
 from empenos.api_rest.dia_no_laboral_api import DiaNoLaboralApi
+from empenos.api_rest.kilataje_api import KilatajeApi
 from .report import *
 
 app_name="empenos"
 urlpatterns=[
 	url(r'^v2/dia_no_laboral/$',DiaNoLaboralApi.as_view()),
-	url(r'^v2/dia_no_laboral/(?P<id_fecha>\w+)/',DiaNoLaboralApi.as_view())
+	url(r'^v2/dia_no_laboral/(?P<id_fecha>\w+)/',DiaNoLaboralApi.as_view()),
+	url(r'^v2/kilataje/$',KilatajeApi.as_view()),
 ]
+
+
 """
 urlpatterns=[
 	#formularios

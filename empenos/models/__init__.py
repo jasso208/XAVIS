@@ -52,4 +52,5 @@ from .rel_abono_periodo import Rel_Abono_Periodo
 from .configuracion_interes_empeno import Configuracion_Interes_Empeno
 from .configuracion_porcentaje_mutuo import Configuracion_Porcentaje_Mutuo
 from .historico_estatus_cartera import Historico_Estatus_Cartera
+from .interes_empeno import InteresEmpeno
 
