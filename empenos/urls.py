@@ -47,6 +47,9 @@ urlpatterns=[
 	url(r'^cancela_abono/$',cancela_abono,name="cancela_abono"),
 	url(r'^cancela_boleta/$',cancela_boleta,name="cancela_boleta"),
 	url(r'^forzar_desempeno/$',forzar_desempeno,name="forzar_desempeno"),
+	url(r'^reactivar_apartado/$',reactivar_apartado,name="reactivar_apartado"),
+
+	
 	
 	url(r'^rep_comparativo_estatus_cartera/$',rep_comparativo_estatus_cartera,name="rep_comparativo_estatus_cartera"),
 	url(r'^reporte_retiros_efectivo/$',reporte_retiros_efectivo,name="reporte_retiros_efectivo"),
@@ -115,6 +118,7 @@ urlpatterns=[
 	url(r'^api_boleta_empeno/$',api_boleta_empeno,name="api_boleta_empeno"),
 
 	url(r'^api_forzar_desempeno/$',api_forzar_desempeno,name="api_forzar_desempeno"),
+	url(r'^api_apartado/$',api_apartado,name="api_apartado"),
 
 
 

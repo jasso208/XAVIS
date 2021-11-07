@@ -48,6 +48,12 @@ class Establece_Costo_Desempeno(forms.Form):
 	folio = forms.CharField()
 	precio_desempeno = forms.IntegerField()
 
+class Reactivar_Apartado_Form(forms.Form):
+	sucursal = forms.ModelChoiceField(queryset = Sucursal.objects.all())
+	folio_apartado = forms.CharField()
+	folio_boleta = forms.CharField()
+	nueva_fecha_vencimiento = forms.DateField()
+
 class Reporte_Retiros_Form(forms.Form):
 	fecha_inicial=forms.DateTimeField(initial=timezone.now())
 	fecha_final=forms.DateTimeField(initial=timezone.now())

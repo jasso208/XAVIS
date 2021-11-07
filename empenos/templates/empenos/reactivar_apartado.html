@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap3 %}
+{% block archivos_staticos%}
+<script type="text/javascript" src="{% static 'js/reactivar_apartado.js' %}"></script>
+{% endblock %}
+{% block usuario %}
+
+			<div class="col-xs-6">
+				<label class="cls_icono no-btn"><span class="glyphicon glyphicon-user"></span> Usuario: {{request.user.username}}: {{request.user.first_name}} {{request.user.last_name}}</label> 
+				
+			</div>
+			<div class="col-xs-3">
+				<label class="cls_icono no-btn"><span class="glyphicon glyphicon-home"></span> Sucursal: {{user_2.sucursal}}</label> 	
+			</div>
+
+			<div class="col-xs-3">
+				<label class="cls_icono no-btn"><span class="glyphicon glyphicon-inbox"></span> Caja: {{caja.caja}} </label> 	
+			</div>
+{% endblock  %}
+{% block content %}
+	<div class="col-xs-12 cls_encabezado_body">	
+		
+		<div class="col-xs-10">
+			<a >
+				Reactivar apartado
+			</a>				
+		</div>
+		<div class="col-xs-2">
+			<a id = "btn_ayuda" style="cursor: pointer;" >
+				<span class="glyphicon glyphicon-question-sign"></span>
+				Ayuda
+			</a>
+		</div>
+
+	</div>
+    <div class="col-xs-12">
+		<form method="post" action="#" class="cls_form_1" id="form_principal">
+			{%csrf_token%}  
+			<div class="row cls_form_consulta">
+
+				<div class="col-xs-12">
+					<div class="panel panel-default" id="panel_principal" >						 
+						<div class="panel-body">
+
+							<div class="col-xs-12">
+								<div class="panel panel-default">						
+									<div class="panel-body">
+										<div class="col-xs-3"  >
+											<label for="">Sucursal</label>
+											{% bootstrap_field form.sucursal show_label=False %}
+										</div>
+                                        <div class="col-xs-3"  >
+											<label for="">Folio apartado</label>
+											{% bootstrap_field form.folio_apartado show_label=False %}
+										</div>
+                                        <div class="col-xs-3"  >
+											<label for="">Folio boleta</label>
+											{% bootstrap_field form.folio_boleta show_label=False %}
+										</div>
+                                        <div class="col-xs-3"  >
+											<label for="">Nueva fecha vencimiento</label>
+											<input type="date" name="nueva_fecha_vencimiento" class="form-control" placeholder="Nueva fecha vencimiento" title="" required="" id="id_nueva_fecha_vencimiento">
+										</div>
+                                        <div class="col-xs-12 text-right">						
+											<a class="btn btn-primary btn-sm" style="margin-top: 25px;" id="btn_guardar">
+												<span class="glyphicon glyphicon-ok">
+													
+												</span>
+												Reactivar boleta
+											</a>
+																		
+										</div>	
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="fondo_mensaje cls_ayuda"  >
+			
+	</div >
+	
+	<div class="mensaje cls_ayuda" >	
+			<div class="cls_encabezado_alert" >
+				Ayuda
+			</div>
+
+			<div class="panel panel-default">	
+				<p class="page-header" style="text-align: justify;padding-left: 10px;padding-right: 10px;" >
+					Esta opcion nos permite reactivar un apartado.
+					<br>
+					<br>
+					Validaciones:
+					<br>
+					<br>
+					* La fecha de venciminto debe ser posterior al dia actual
+                    <br>
+                    * La boleta debe estar en estatus Remata o Almoneda.
+					<br>
+                    * El apartado debe estar en estatus Liberado.
+                    <br>
+                    * La boleta y el apartado deben pertenecer a la misma sucursal.                    
+					<br>
+					<br>                    					
+				</p>
+				<br>
+
+				<a class="btn btn-primary btn-sm" id="btn_aceptar_ayuda" ><span class="glyphicon glyphicon-ok"></span> Aceptar</a>		
+				<br>
+				<br>		
+
+			</div>
+	</div>
+
+
+	<!--**********************************************************************************-->
+    	<!--**********************************************************************************-->
+	<div class="fondo_mensaje cls_msj_aviso" >
+			
+	</div >
+	<div class="mensaje cls_msj_aviso" >
+			<div class="cls_encabezado_alert " >
+				<span id="encabezado_aviso"></span>			
+			</div>
+			<div class="panel panel-default">	
+				<label class="page-header" id="msj_aviso"></label>
+				<br>
+				<a class="btn btn-primary btn-sm" id="btn_aceptar_aviso"><span class="glyphicon glyphicon-ok"></span> Aceptar</a>
+				<br>
+				<br>
+
+			</div>
+	</div>
+	<!--**********************************************************************************-->
+
+	<div id="fondo_preloader">
+		<div class="preloader" id="preloader">
+		
+		</div>
+	</div>
+    
+    <script type="text/javascript">
+        $(document).ready(
+            function()
+            {
+                    inicio("{{csrf_token}}","{{request.user.username}}","{{IP_LOCAL}}");
+            }
+        );
+    </script>
+{% endblock %}

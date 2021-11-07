@@ -1458,6 +1458,30 @@ def forzar_desempeno(request):
 	return render(request,'empenos/forzar_desempeno.html',locals())
 #*******************************************************************************************************************************************************
 #*¨**************************************************************************************************************************************************************
+def reactivar_apartado(request):
+	#si regresa none, es porque el usuario no esta logueado.
+	user_2 = User_2.fn_is_logueado(request.user)
+	if user_2 == None:
+		return HttpResponseRedirect(reverse('seguridad:login'))
+		
+	if not user_2.fn_tiene_acceso_a_vista(27):
+		return HttpResponseRedirect(reverse('seguridad:sin_permiso_de_acceso'))
+
+	caja = user_2.fn_tiene_caja_abierta()
+
+	if caja != None:
+		caja_abierta="1"#si tiene caja abierta enviamos este estatus para  dejar entrar a la pantalla.
+		suc=caja.sucursal
+		c=caja.caja
+	else:
+		caja_abierta="0"
+		caja=Cajas
+	form = Reactivar_Apartado_Form()
+	return render(request,'empenos/reactivar_apartado.html',locals())
+
+
+#*******************************************************************************************************************************************************
+#*¨**************************************************************************************************************************************************************
 
 def reporte_retiros_efectivo(request):
 	#si regresa none, es porque el usuario no esta logueado.

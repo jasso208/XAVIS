@@ -1772,6 +1772,63 @@ class Apartado(models.Model):
 	nombre_cliente = models.CharField(max_length = 100,default = '')
 	telefono = models.CharField(max_length = 10,default = '')
 
+	#funcion que nos ayuda a activar nuevamente el apartado.
+	def activaApartadoVencido(self,folioBoleta,idSucursal,nuevaFechaVencimiento):
+		msjError = ""
+		print(nuevaFechaVencimiento)
+		try:
+			sucursal = Sucursal.objects.get(id=idSucursal)
+		except:
+			return {"estatus":"0","msj":"La sucursal indicada no existe."}
+
+		try:
+			boleta = Boleta_Empeno.objects.get(folio = folioBoleta,sucursal = sucursal)
+		except:
+			return {"estatus":"0","msj":"La boleta indicada no existe."}
+
+		#Validamos que la boleta este no este 2: Cancelada; 4: Desempeñada; 6: Vendida o 7: Apartada
+		print("ente de valdar estatus boleta")
+		try:
+			estatus = [1,2,4,6,7].index(boleta.estatus.id)
+			return {"estatus":"0","msj":"La boleta esta " + boleta.estatus.estatus + ", no puede ser apartartada nuevamente."}			
+		except Exception as e:
+			print(e)
+			pass
+
+		#validamos que la sucursal del apartado que se desea modificar sea la misma que la sucursal de la boleta
+		if self.sucursal != sucursal:
+			return {"estatus":"0","msj":"La sucursal de la boleta no coincide con la del apartado."}
+
+		#Validamos que el apartado este liberado.
+		if self.estatus.id != 2:
+			return {"estatus":"0","msj":"El apartado esta en estatus " + self.estatus.estatus + ", no puede ser modificado."}
+
+		try:
+			nuevaFechaVencimiento = datetime.strptime(nuevaFechaVencimiento,"%Y-%m-%d")
+		except:
+			return {"estatus":"0","msj":"La nueva fecha de vencimeinto inidicada no tiene el formato correcto."}
+
+
+		if nuevaFechaVencimiento < datetime.now():
+			return {"estatus":"0","msj":"La nueva fecha de vencimiento indicada no es valida. Debe indicar una fecha posterior al día de hoy."}
+		
+		if Apartado.objects.filter(boleta = boleta).exists():
+			return{"estatus":"0","msj":"La boleta ya se encuentra apartada en otro folio de apartado."}
+		try:
+			self.estatus = Estatus_Apartado.objects.get(id = 1)
+			self.fecha_vencimiento = nuevaFechaVencimiento
+			self.boleta = boleta
+			self.save()
+
+			boleta.estatus = Estatus_Boleta.objects.get(id=7)
+			boleta.save()
+			return {"estatus":"1"}
+		except Exception as e:
+			print(e)
+			return {"estatus":"0","msj":"Error al reactivar el apartado."}
+		
+
+
 class Abono_Apartado(models.Model):
 	folio=models.CharField(max_length=7,null=True)
 	usuario=models.ForeignKey(User,on_delete=models.PROTECT,null=True,blank=True,related_name="usuario_ab_apartado")
