@@ -2164,6 +2164,16 @@ class Dia_No_Laboral(models.Model):
         unique_together=("fecha",)
 
 
+    def agregar(fecha):
+        try:
+            dia = Dia_No_Laboral()
+            dia.fecha = datetime.strptime(fecha,"%Y-%m-%d")
+            dia.save()
+        except:
+            pass	
+		
+        return {"estatus":"1","msj":"El dia se agrego correctamente."}
+
 
 #cuando se aplica un refrendo y se le descuento los periodos PG
 #se almacenan en esta tabla durante el dia, esto con la finalidad de poder cancelar

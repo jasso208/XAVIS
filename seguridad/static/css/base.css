@@ -136,7 +136,7 @@ td
 	color: #003698;
 
 }
-.btn-primary
+.btn-primary,.btn-default
 {
 	margin-top: 5px;
 }

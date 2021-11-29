@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap3 %}
+{% block archivos_staticos%}
+<script type="text/javascript" src="{% static 'js/admin_dia_no_laboral.js' %}"></script>
+{% endblock %}
+{% block usuario %}
+
+			<div class="col-xs-6">
+				<label class="cls_icono no-btn"><span class="glyphicon glyphicon-user"></span> Usuario: {{request.user.username}}: {{request.user.first_name}} {{request.user.last_name}}</label> 
+				
+			</div>
+			<div class="col-xs-3">
+				<label class="cls_icono no-btn"><span class="glyphicon glyphicon-home"></span> Sucursal: {{user_2.sucursal}}</label> 	
+			</div>
+
+			<div class="col-xs-3">
+				<label class="cls_icono no-btn"><span class="glyphicon glyphicon-inbox"></span> Caja: {{caja.caja}} </label> 	
+			</div>
+{% endblock  %}
+{% block content %}
+	<div class="col-xs-12 cls_encabezado_body">	
+		
+		<div class="col-xs-10">
+			<a >
+				Administrar dias no laborales
+			</a>				
+		</div>
+
+	</div>
+
+    <div class="col-xs-12">
+		<form method="post" action="#" class="cls_form_1" id="form_principal">
+			{%csrf_token%}  
+			<div class="row cls_form_consulta">
+
+				<div class="col-xs-12">
+					<div class="panel panel-default" id="panel_principal" >						 
+						<div class="panel-body">
+
+							<div class="col-xs-12">
+								<div class="panel panel-default">						
+									<div class="panel-body">
+                                        <div class="col-xs-3"  >
+											<label for="">Año</label>
+                                            <input type="number" class="form-control" id="year" maxlength="4" >
+                                        </div>
+                                        <div class="col-xs-3">
+                                           
+                                            <br>
+                                            <a id="btn_consultar_dias" class="btn btn-primary btn-sm">
+                                                <span class="glyphicon glyphicon-search"></span>
+                                                Consultar
+                                            </a>
+
+                                        </div>
+
+                                        <div class="col-xs-3">
+                                           
+                                            <br>											
+                                            <a id="btn_mostrar_agregar_dia" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                                Agregar
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+							<div class="col-xs-12">
+								<div class="cls_encabezado_alert " >
+									<label> Dias no laborales</label>
+								</div>
+
+								<table id="tabla_dias_no_laborales" class="table table-bordered">
+									<thead>
+											<tr>
+												<th ></th>
+												<th >Fecha</th>												        
+											</tr>
+									</thead>
+
+									<tbody>
+									
+
+									</tbody>
+								</table>
+							</div>
+							
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+	<div class="fondo_mensaje cls_msj_aviso" >
+	</div >
+
+	<div class="mensaje cls_msj_aviso" >
+			<div class="cls_encabezado_alert " >
+				<span id="encabezado_aviso"></span>			
+			</div>
+			<div class="panel panel-default">	
+				<label class="page-header" id="msj_aviso"></label>
+				<br>
+				<a class="btn btn-primary btn-sm" id="btn_aceptar_aviso"><span class="glyphicon glyphicon-ok"></span> Aceptar</a>
+				<br>
+				<br>
+
+			</div>
+	</div>
+	<!--**********************************************************************************-->
+
+	<div id="fondo_preloader">
+		<div class="preloader" id="preloader">
+		
+		</div>
+	</div>
+
+	<!--**********************************************************************************-->
+	<div class="cls_fondo_form_emergente_2 cls_agregar_dia">
+		
+	</div>
+
+	<div class="cls_form_emergente_2 cls_agregar_dia" style="overflow: hidden;" >
+
+				<div class="cls_encabezado_alert" >
+					<label >						
+						Agregar día no laboral
+					</label>
+				</div>
+
+
+				<div class="col-xs-12"  >
+					<br>
+					<input type="date" class="form-control" id="fecha_no_laboral">
+				</div>
+
+
+				<div class="col-xs-12 text-right">
+					<br>
+
+					<a id="btn_cancelar_agregar_dia" class="btn btn-default btn-sm">						
+						Cancelar
+					</a>
+
+					<a id="btn_agregar_dia" class="btn btn-primary btn-sm">
+						<span class="glyphicon glyphicon-plus"></span>
+						Agregar
+					</a>
+
+				</div>
+				<div class="col-xs-12 text-right">
+					<br>
+				</div>
+	</div>
+	<!--**********************************************************************************-->
+
+
+    <script type="text/javascript">
+        $(document).ready(
+            function()
+            {
+                    inicio("{{csrf_token}}","{{request.user.username}}","{{IP_LOCAL}}");
+            }
+        );
+	</script>
+{% endblock %}

@@ -48,6 +48,7 @@ urlpatterns=[
 	url(r'^cancela_boleta/$',cancela_boleta,name="cancela_boleta"),
 	url(r'^forzar_desempeno/$',forzar_desempeno,name="forzar_desempeno"),
 	url(r'^reactivar_apartado/$',reactivar_apartado,name="reactivar_apartado"),
+	url(r'^admin_dia_no_laboral/$',admin_dia_no_laboral,name="admin_dia_no_laboral"),
 
 	
 	
@@ -119,6 +120,7 @@ urlpatterns=[
 
 	url(r'^api_forzar_desempeno/$',api_forzar_desempeno,name="api_forzar_desempeno"),
 	url(r'^api_apartado/$',api_apartado,name="api_apartado"),
+	url(r'^api_dia_no_laboral/$',api_dia_no_laboral,name="api_dia_no_laboral"),
 
 
 

@@ -50,6 +50,25 @@ def api_apartado(request):
 		return Response(apartado.activaApartadoVencido(folioBoleta,idSucursal,nuevaFechaVencimiento))
 
 
+@api_view(["POST","GET","DELETE"])
+def api_dia_no_laboral(request):
+	if request.method == "POST":
+		fecha_no_laboral = request.data["fecha"]
+		return Response(Dia_No_Laboral.agregar(fecha_no_laboral))
+	if request.method == "GET":
+		year = request.GET.get("year")
+		dias =  Dia_No_Laboral.objects.filter(fecha__year = year).values().order_by("fecha")
+		return Response(dias)
+	if request.method == "DELETE":
+		id = request.data["iddia"]
+		try:
+			Dia_No_Laboral.objects.get(id=id).delete()
+			return Response({"estatus":"1"})
+		except:
+			return Response({"estatus":"0","msj":"Error al eliminar el día indicado."})
+        
+
+
 
 @api_view(['DELETE'])
 def api_boleta_empeno(request):
