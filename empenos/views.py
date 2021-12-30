@@ -3088,6 +3088,7 @@ def retiro_efectivo(request):
 	fondo_inicial=0.00
 	otros_ingresos=0.00
 	retiros=0.00
+	retiros_socios = 0.00
 	empenos=0.00
 	total_movs=1#se empieza a contar 1 porque hubo  al menos una apertura de cajero
 	total_efectivo=0.00
