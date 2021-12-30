@@ -19,6 +19,7 @@
 {% endblock  %}
 
 {% block content %}
+
 	<div class="col-xs-12 cls_encabezado_body">	
 		<a>
 			Retiro de Efectivo
@@ -28,7 +29,6 @@
 	<div class="col-xs-12">
 		<form method="post" action="#" class="cls_form_1">
 			{%csrf_token%}
-			
 			<div class="row cls_form_consulta">
 				<div class="col-xs-12">
 					<div class="panel panel-default">						
@@ -223,6 +223,17 @@
 								</div>
 
 								<div class="col-xs-12">
+									<div class="col-xs-6">
+										<p>Pago a socios:</p>
+									</div>
+									<div class="col-xs-3 text-right">
+										<p>{{cont_retiros_socios}}</p>
+									</div>
+									<div class="col-xs-3 text-right">
+										<p>${{retiros_socios}}</p>
+									</div>
+								</div>
+								<div class="col-xs-12">
 									<div class="col-xs-12">
 										<h4 class="page-header"></h4>
 									</div>
@@ -261,29 +272,42 @@
 											{% endif %}
 
 										</div>
+
 										<div class="col-xs-12">
+
+											<label>Tipo retiro</label>
+											<select name="id_tipo_retiro" class="form-control" title="" id="id_tipo_retiro" >
+											
+												<option value="1">GASTO</option>	
+												<option value="2">PAGO A SOCIOS</option>	
+												
+											</select>
+
+										</div>
+
+										<div class="col-xs-12" id="div_concepto">
 											<label>Concepto</label>
-
-
-
-				
-
-
-											<select name="concepto" class="form-control" title="" id="id_concepto">
+											<select name="concepto" class="form-control" title="" id="id_concepto" >
 											  <option value="" selected="">---------</option>
 
 												{% for c in conceptos %}
 
 													<option value="{{c.id}}">{{c.id}} {{c.concepto}} </option>	
 												{% endfor %}
-											 
-
 											</select>
-
-
-											
-											
 										</div>
+
+										<div class="col-xs-12" id="div_socio">
+											<label>Socio</label>
+											<select name="socio" class="form-control" title="" id="id_socio" >
+											  <option value="" selected="">---------</option>
+
+												{% for c in socios %}
+													<option value="{{c.id}}">{{c.id}} {{c.nombre}} </option>	
+												{% endfor %}
+											</select>
+										</div>
+
 										<div class="col-xs-12">
 
 											<label for=""> Comentario</label>
@@ -485,6 +509,22 @@
 								}
 							);
 
+						$("#id_tipo_retiro").change(
+							function(){
+
+								$("#id_concepto").val("");
+								$("#id_socio").val("");
+								if($("#id_tipo_retiro").val()=="1"){
+									$("#div_concepto").show();
+									$("#div_socio").hide();
+									
+								}else{
+									$("#div_concepto").hide();
+									$("#div_socio").show();
+								}
+
+							}
+						);
 						$("#btn_aceptar_error_form").click(
 								function ()
 								{
@@ -570,12 +610,25 @@
 									return 0;
 
 								}
-								if($("#id_concepto").val() == "")
-								{
-									$(".cls_error_formulario").show();
-									$("#msj_error_form").text("Debe indicar el concepto de retiro.");
-									return 0;									
+								if($("#id_tipo_retiro").val() == "1"){
+
+									if($("#id_concepto").val() == "")
+									{
+										$(".cls_error_formulario").show();
+										$("#msj_error_form").text("Debe indicar el concepto de retiro.");
+										return 0;									
+									}
 								}
+								if($("#id_tipo_retiro").val() == "2"){
+									if($("#id_socio").val() == "")
+									{
+										$(".cls_error_formulario").show();
+										$("#msj_error_form").text("Debe indicar un socio.");
+										return 0;									
+									}
+								}
+
+
 								$("#fondo_preloader").show();
 
 								id_concepto = $("#id_concepto").val();
@@ -583,8 +636,16 @@
 							   $.ajax({
 							        type: "GET",
 							        url: "{{IP_LOCAL}}/empenos/envia_token/",
-							        data: { 'asunto':'{{asunto}}' , 'usuario':'{{usuario}}' ,'sucursal':'{{sucursal}}' ,'caja':'{{caja}} ','importe': $(	"#id_importe").val(),'comentarios':$("#id_comentario").val(),'token':'{{token}}',
-							        		"id_concepto":$("#id_concepto").val()
+							        data: { 'asunto':'{{asunto}}' , 
+											'usuario':'{{usuario}}' ,
+											'sucursal':'{{sucursal}}' ,
+											'caja':'{{caja}} ',
+											'importe': $(	"#id_importe").val(),
+											'comentarios':$("#id_comentario").val(),
+											'token':'{{token}}',
+											'id_tipo_retiro':$("#id_tipo_retiro").val(),
+							        		"id_concepto":$("#id_concepto").val(),
+							        		"id_socio":$("#id_socio").val()
 							    		},
 							        contentType: "application/json; charset=utf-8",
 							        dataType: "json",
@@ -596,6 +657,8 @@
 										$("#id_importe").prop("readonly",true);
 										$("#id_comentario").prop("readonly",true);
 										$("#id_concepto").prop("disabled",true);
+										$("#id_socio").prop("disabled",true);
+										$("#id_tipo_retiro").prop("disabled",true);
 
 										$(".cls_notificacion").show();
 										$("#msj_notificacion").text("El código de confirmación se envío al gerente regional.");
@@ -637,6 +700,7 @@
 			if (importe <= 0)
 			{
 				$(".cls_error_concepto_retiro").show();
+				$("#id_concepto").val("");
 				$("#msj_error_concepto_retiro").text("El importe indicado para retiro no es valido.");
 				return false;
 			}
@@ -716,6 +780,9 @@
 			$(".cls_notificacion").hide();
 			$(".cls_error_concepto_retiro").hide();
 			$(".cls_exito").hide();
+
+			$("#div_socio").hide();
+			$("#id_tipo_retiro").val("1");
 			if("{{error_token}}"=="1")
 			{
 				$(".cls_error_formulario").show();

@@ -280,6 +280,18 @@
 										<p id="empenos"></p>
 									</div>
 								</div>
+
+								<div class="col-xs-12">
+									<div class="col-xs-6">
+										<p>Pago a socios:</p>
+									</div>
+									<div class="col-xs-3 text-right">
+										<p id="cont_retiros_socios"></p>
+									</div>
+									<div class="col-xs-3 text-right">
+										<p id="retiros_socios"></p>
+									</div>
+								</div>
 								<div class="col-xs-12">
 									<div class="col-xs-12">
 										<h4 class="page-header"></h4>
@@ -806,6 +818,7 @@
 					        contentType: "application/json; charset=utf-8",
 					        dataType: "json",
 					        success: function (r) {
+								
 					        	fn_calcular_diferencia();
 					        	$("#btn_cerrar_caja").show()
 					        	$("#id_nota_1").hide()
@@ -823,6 +836,8 @@
 						            $("#cont_otros_ingresos").text("0");
 						            $("#cont_retiros").text("0");						            
 						            $("#retiros").text("$0.00");
+						            $("#cont_retiros_socios").text("0");						            
+						            $("#retiros_socios").text("$0.00");
 
 						            //$("#cont_ref_pg").text("0");
 						            //$("#refrendos_pg").text("$0.00");
@@ -894,6 +909,10 @@
 					            $("#cont_otros_ingresos").text(r[0].cont_otros_ingresos);
 					            $("#cont_retiros").text(r[0].cont_retiros);
 					            $("#retiros").text("$"+r[0].retiros);
+
+
+								$("#cont_retiros_socios").text(r[0].cont_retiros_socios);						            
+						        $("#retiros_socios").text("$" + r[0].retiros_socios);
 
 								//$("#cont_ref_pg").text(r[0].cont_ref_pg);
 								//$("#refrendos_pg").text("$"+r[0].refrendos_pg+"");

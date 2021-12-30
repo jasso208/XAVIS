@@ -2370,6 +2370,9 @@ def rep_flujo_caja(request):
 	importe_retiros=0.00			
 	cont_retiros=0
 
+	importe_retiros_socios = 0.00			
+	cont_retiros_socios = 0
+
 
 	cont_remate=0
 	mutuo_remate=0.00
@@ -2401,6 +2404,7 @@ def rep_flujo_caja(request):
 	ce_aux = 0.00
 	ganancia_ventas_aux = 0.00
 	im_retiros_aux = 0.00
+	im_retiros_aux_socios = 0.00
 
 
 	cont_t_entradas = 0
@@ -2440,7 +2444,8 @@ def rep_flujo_caja(request):
 			cpg_aux = sucursal.fn_get_total_comision_pg(dia_primero_mes,dia_ultimo_mes)
 			ce_aux = sucursal.fn_get_total_costos_extras(dia_primero_mes,dia_ultimo_mes)			
 			ganancia_ventas_aux = sucursal.fn_get_ganancia_ventas(dia_primero_mes,dia_ultimo_mes)
-			im_retiros_aux = sucursal.fn_get_retiros(dia_primero_mes,dia_ultimo_mes)
+			im_retiros_aux = sucursal.fn_get_retiros(dia_primero_mes,dia_ultimo_mes,1)
+			im_retiros_aux_socios = sucursal.fn_get_retiros(dia_primero_mes,dia_ultimo_mes,2)
 
 
 			cont_ab_apartado = Abono_Apartado.objects.filter(fecha__range = (fecha_inicial,fecha_final),caja__sucursal = sucursal).count()
@@ -2557,14 +2562,28 @@ def rep_flujo_caja(request):
 			if oi["importe__sum"]!=None:
 				importe_otros=decimal.Decimal(importe_otros)+decimal.Decimal(oi["importe__sum"])
 
-			ret=Retiro_Efectivo.objects.filter(sucursal=sucursal,fecha__range=(fecha_inicial,fecha_final),activo = 1).aggregate(Sum("importe"))
+
+
+
+			#calculamos los retirosde gastos
+			ret=Retiro_Efectivo.objects.filter(sucursal=sucursal,fecha__range=(fecha_inicial,fecha_final),activo = 1,tipo_retiro__id = 1).aggregate(Sum("importe"))
 
 			importe_retiros=0.00			
 			cont_retiros=0
 			if ret["importe__sum"]!=None:
 				importe_retiros=ret["importe__sum"]
-				cont_retiros=Retiro_Efectivo.objects.filter(sucursal=sucursal,fecha__range=(fecha_inicial,fecha_final),activo = 1).count()
+				cont_retiros=Retiro_Efectivo.objects.filter(sucursal=sucursal,fecha__range=(fecha_inicial,fecha_final),activo = 1,tipo_retiro__id = 1).count()
 
+
+
+			#calculamos los retiros depago a socio
+			ret_socios=Retiro_Efectivo.objects.filter(sucursal=sucursal,fecha__range=(fecha_inicial,fecha_final),activo = 1,tipo_retiro__id = 2).aggregate(Sum("importe"))
+
+			importe_retiros_socios=0.00			
+			cont_retiros_socios=0
+			if ret_socios["importe__sum"] != None:
+				importe_retiros_socios = ret_socios["importe__sum"]
+				cont_retiros_socios = Retiro_Efectivo.objects.filter(sucursal=sucursal,fecha__range=(fecha_inicial,fecha_final),activo = 1,tipo_retiro__id = 2).count()
 
 
 
@@ -2695,7 +2714,8 @@ def rep_flujo_caja(request):
 				cpg_aux = decimal.Decimal(cpg_aux) + decimal.Decimal(s.fn_get_total_comision_pg(dia_primero_mes,dia_ultimo_mes))
 				ce_aux = decimal.Decimal(ce_aux) + decimal.Decimal(s.fn_get_total_costos_extras(dia_primero_mes,dia_ultimo_mes))			
 				ganancia_ventas_aux = decimal.Decimal(ganancia_ventas_aux) + decimal.Decimal(s.fn_get_ganancia_ventas(dia_primero_mes,dia_ultimo_mes))
-				im_retiros_aux = decimal.Decimal(im_retiros_aux) + decimal.Decimal(s.fn_get_retiros(dia_primero_mes,dia_ultimo_mes))
+				im_retiros_aux = decimal.Decimal(im_retiros_aux) + decimal.Decimal(s.fn_get_retiros(dia_primero_mes,dia_ultimo_mes,1))
+				im_retiros_aux_socios = decimal.Decimal(im_retiros_aux) + decimal.Decimal(s.fn_get_retiros(dia_primero_mes,dia_ultimo_mes,2))
 			
 			cont_ab_apartado=Abono_Apartado.objects.filter(fecha__range=(fecha_inicial,fecha_final)).count()
 
@@ -2802,6 +2822,18 @@ def rep_flujo_caja(request):
 			if ret["importe__sum"]!=None:
 				importe_retiros=ret["importe__sum"]
 				cont_retiros=Retiro_Efectivo.objects.filter(fecha__range=(fecha_inicial,fecha_final),activo = 1).count()
+
+
+
+		#calculamos los retiros depago a socio
+			ret_socios=Retiro_Efectivo.objects.filter(fecha__range=(fecha_inicial,fecha_final),activo = 1,tipo_retiro__id = 2).aggregate(Sum("importe"))
+
+			importe_retiros_socios=0.00			
+			cont_retiros_socios=0
+			if ret_socios["importe__sum"] != None:
+				importe_retiros_socios = ret_socios["importe__sum"]
+				cont_retiros_socios = Retiro_Efectivo.objects.filter(fecha__range=(fecha_inicial,fecha_final),activo = 1,tipo_retiro__id = 2).count()
+
 
 
 
@@ -2928,13 +2960,13 @@ def rep_flujo_caja(request):
 
 
 
-	cont_t_salidas = cont_retiros + cont_empenos
-	importe_t_salidas = math.ceil( float(importe_empenos) + float(importe_retiros))
+	cont_t_salidas = cont_retiros + cont_empenos + cont_retiros_socios 
+	importe_t_salidas = math.ceil( float(importe_empenos) + float(importe_retiros) +float(importe_retiros_socios) ) 
 	
 
 	importe_refrendo=round(importe_refrendo)
 
-	importe_total = decimal.Decimal(importe_ab_apartado) + decimal.Decimal(saldo_inicial) - decimal.Decimal(importe_empenos) + decimal.Decimal(importe_desempenos)+decimal.Decimal(importe_capital)+decimal.Decimal(importe_refrendo)+decimal.Decimal(importe_com_pg)+decimal.Decimal(importe_otros)-decimal.Decimal(importe_retiros)+decimal.Decimal(importe_ventas) + decimal.Decimal(importe_reimpresion_boleta)
+	importe_total = decimal.Decimal(importe_ab_apartado) + decimal.Decimal(saldo_inicial) - decimal.Decimal(importe_empenos) + decimal.Decimal(importe_desempenos)+decimal.Decimal(importe_capital)+decimal.Decimal(importe_refrendo)+decimal.Decimal(importe_com_pg)+decimal.Decimal(importe_otros)-decimal.Decimal(importe_retiros)-decimal.Decimal(importe_retiros_socios)+decimal.Decimal(importe_ventas) + decimal.Decimal(importe_reimpresion_boleta)
 
 	importe_total=math.ceil(importe_total)
 
@@ -2942,8 +2974,8 @@ def rep_flujo_caja(request):
 
 	cont_total_2=cont_almoneda+cont_activas+cont_remate
 
-			
-	total_utilidad = decimal.Decimal(refrendo_aux) + decimal.Decimal(cpg_aux) + decimal.Decimal(ce_aux) + decimal.Decimal(ganancia_ventas_aux) - decimal.Decimal(im_retiros_aux)
+	tot_im_retiros_aux = decimal.Decimal(im_retiros_aux) +  decimal.Decimal(im_retiros_aux_socios)		
+	total_utilidad = decimal.Decimal(refrendo_aux) + decimal.Decimal(cpg_aux) + decimal.Decimal(ce_aux) + decimal.Decimal(ganancia_ventas_aux) - decimal.Decimal(im_retiros_aux)- decimal.Decimal(im_retiros_aux_socios)
 
 
 	ganancias_t = float(ganancia_ventas_aux) + float(ce_aux) + float(cpg_aux) + float(refrendo_aux)
@@ -2956,7 +2988,9 @@ def rep_flujo_caja(request):
 	ganancia_ventas_aux = "{:0,.2f}".format(ganancia_ventas_aux)
 
 	total_utilidad = "{:0,.2f}".format(total_utilidad)
+	tot_im_retiros_aux = "{:0,.2f}".format(tot_im_retiros_aux)
 
+	
 
 	total_mutuo=mutuo_almoneda+mutuo_activo+mutuo_remate
 	total_almoneda=avaluo_almoneda+avaluo_activo+avaluo_remate
@@ -2978,10 +3012,12 @@ def rep_flujo_caja(request):
 	mutuo_remate = "{:0,.2f}".format(mutuo_remate)
 	avaluo_remate = "{:0,.2f}".format(avaluo_remate)
 	im_retiros_aux = "{:0,.2f}".format(im_retiros_aux)
+	im_retiros_aux_socios = "{:0,.2f}".format(im_retiros_aux_socios)
 	importe_total="{:0,.2f}".format(importe_total)
 	total_mutuo="{:0,.2f}".format(total_mutuo)
 	total_almoneda="{:0,.2f}".format(total_almoneda)
 	importe_retiros="{:0,.2f}".format(importe_retiros)
+	importe_retiros_socios="{:0,.2f}".format(importe_retiros_socios)
 
 	utilidad_vta_piso=decimal.Decimal(importe_venta_piso)-decimal.Decimal(importe_mutuo_piso)
 	utilidad_vta_granel=decimal.Decimal(importe_venta_granel)-decimal.Decimal(importe_mutuo_granel)
@@ -3103,14 +3139,26 @@ def retiro_efectivo(request):
 
 	#buscamos los retiros
 	try:
-		ret=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1).aggregate(Sum('importe'))
-		cont_retiros=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1).count()
+		ret=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 1).aggregate(Sum('importe'))
+		cont_retiros=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 1).count()
 		total_movs=total_movs+cont_retiros #sumamos el total de retiros al total de movimientos
 		if ret["importe__sum"]!=None:
 			retiros=ret["importe__sum"]
 	except Exception as e:
 		print(e)
 		print("No tiene retiros.")
+
+
+	#buscamos los retiros (Pago a socios)
+	try:
+		ret_socios = Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 2).aggregate(Sum('importe'))
+		cont_retiros_socios = Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 2).count()
+		total_movs = total_movs+cont_retiros_socios #sumamos el total de retiros al total de movimientos
+		if ret["importe__sum"]!=None:
+			retiros_socios=ret_socios["importe__sum"]
+	except Exception as e:
+		print(e)
+		print("No tiene retiros para socios.")
 
 
 	try:
@@ -3252,7 +3300,7 @@ def retiro_efectivo(request):
 	
 
 	#total=fondo_inicial+otros_ingresos-retiros_caja
-	total_efectivo=decimal.Decimal(fondo_inicial)+decimal.Decimal(importe_apartado)+decimal.Decimal(otros_ingresos)-decimal.Decimal(retiros)-decimal.Decimal(empenos)+decimal.Decimal(pago_capital)+decimal.Decimal(comisiones_pg)+decimal.Decimal(refrendos_pg)+decimal.Decimal(importe_refrendo)+decimal.Decimal(importe_rebol)+decimal.Decimal(importe_desemp)+decimal.Decimal(importe_ventas)
+	total_efectivo=decimal.Decimal(fondo_inicial)+decimal.Decimal(importe_apartado)+decimal.Decimal(otros_ingresos)-decimal.Decimal(retiros)-decimal.Decimal(retiros_socios)-decimal.Decimal(empenos)+decimal.Decimal(pago_capital)+decimal.Decimal(comisiones_pg)+decimal.Decimal(refrendos_pg)+decimal.Decimal(importe_refrendo)+decimal.Decimal(importe_rebol)+decimal.Decimal(importe_desemp)+decimal.Decimal(importe_ventas)
 
 	#es la clave para retiros de caja.
 	tm=Tipo_Movimiento.objects.get(id=3)
@@ -3272,12 +3320,14 @@ def retiro_efectivo(request):
 	importe_ventas="{:0,.2f}".format(importe_ventas)
 	importe_apartado="{:0,.2f}".format(importe_apartado)
 	retiros="{:0,.2f}".format(retiros)
+	retiros_socios="{:0,.2f}".format(retiros_socios)
 
 	empenos="{:0,.2f}".format(empenos)
 
 	#total_efectivo="{:0,.2f}".format(total_efectivo)
 
 	conceptos = Concepto_Retiro.objects.filter(sucursal = caja.sucursal, activo = 1)
+	socios = Socio.objects.filter(activo = 1)
 	
 	id_concepto = ""
 
@@ -3297,35 +3347,47 @@ def retiro_efectivo(request):
 		try:
 			q_token = Token.objects.get(tipo_movimiento=tm,sucursal=suc,caja=c,usuario=request.user)
 			token = q_token.token
-			concepto =Concepto_Retiro.objects.get(id = q_token.aux_1) 
+			if q_token.aux_2 == 1:
+				concepto =Concepto_Retiro.objects.get(id = q_token.aux_1) 
+			if q_token.aux_2 == 2:
+				socio =Socio.objects.get(id = q_token.aux_1) 
+
 		except:
 			print("no hay token")
 
 		#validamos si es traspaso
 		#si tiene registrada una sucursal destino es que es traspaso
-		if concepto.sucursal_destino != None:
-			#obtenemos la caja de la sucursal destino
-			caja_destino = concepto.sucursal_destino.fn_get_caja_abierta()
-			if caja_destino == None:
-				error_caja_destino = "1"
-				return render(request,'empenos/retiro_efectivo.html',locals())
+		if q_token.aux_2 == 1:
+			if concepto.sucursal_destino != None:
+				#obtenemos la caja de la sucursal destino
+				caja_destino = concepto.sucursal_destino.fn_get_caja_abierta()
+				if caja_destino == None:
+					error_caja_destino = "1"
+					return render(request,'empenos/retiro_efectivo.html',locals())
 
-		saldo_concepto = concepto.fn_saldo_concepto()		
+		if q_token.aux_2 == 1:
+			saldo_concepto = concepto.fn_saldo_concepto()		
+
 
 		error_saldo_concepto = "0"
-		if int(saldo_concepto) >= int(request.POST["importe"]):	
-			pass#
-			error_saldo_concepto = "0"
-		else:			
-			error_saldo_concepto = "1"
-			
-			return render(request,'empenos/retiro_efectivo.html',locals())
+
+		if q_token.aux_2 == 1:
+			if int(saldo_concepto) >= int(request.POST["importe"]):	
+				pass#
+				error_saldo_concepto = "0"
+			else:			
+				error_saldo_concepto = "1"
+				
+				return render(request,'empenos/retiro_efectivo.html',locals())
+
+		
 		with transaction.atomic():
 			if form.is_valid():
 				#with transaction.atomic():
 				f=form.save(commit=False)
 				error_token='0'
-				id_concepto = f.concepto.id
+				if q_token.aux_2 == 1:
+					id_concepto = f.concepto.id
 				try:
 					#validamos el token de seguridad
 					
@@ -3350,7 +3412,13 @@ def retiro_efectivo(request):
 				f.sucursal=suc
 				f.caja=c
 				f.usuario=request.user
-				f.concepto = concepto
+				f.tipo_retiro = Tipo_Retiro.objects.get(id=int(q_token.aux_2))
+
+				if q_token.aux_2 == 1:
+					f.concepto = concepto
+				if q_token.aux_2 == 2:
+					f.socio = socio
+
 				f.ocaja = caja
 				f.save()
 
@@ -3358,30 +3426,32 @@ def retiro_efectivo(request):
 				
 				retiro = Retiro_Efectivo.objects.get(id =int(id_retiro))
 
-				#validamos si es traspaso
-				#Si es traspaso generamos el ingreso en la sucursal destino
-				if concepto.sucursal_destino != None:
-					#es la clave para otros ingresos.
-					tm=Tipo_Movimiento.objects.get(id=2)
-					folio=fn_folios(tm,concepto.sucursal_destino)
-					str_folio=fn_str_clave(folio)
+				if q_token.aux_2 == 1:
+					#validamos si es traspaso
+					#Si es traspaso generamos el ingreso en la sucursal destino
+					if concepto.sucursal_destino != None:
+						#es la clave para otros ingresos.
+						tm=Tipo_Movimiento.objects.get(id=2)
+						folio=fn_folios(tm,concepto.sucursal_destino)
+						str_folio=fn_str_clave(folio)
 
-					#damos de alta el ingreso en la sucursal destino
-					oi = Otros_Ingresos()			
-					oi.folio = str_folio
-					oi.tipo_movimiento = tm
-					oi.sucursal = concepto.sucursal_destino
-					oi.usuario = request.user
-					oi.importe = retiro.importe
-					oi.comentario = retiro.comentario
-					oi.caja = "A"
-					oi.ocaja = caja_destino
-					oi.save()
+						#damos de alta el ingreso en la sucursal destino
+						oi = Otros_Ingresos()			
+						oi.folio = str_folio
+						oi.tipo_movimiento = tm
+						oi.sucursal = concepto.sucursal_destino
+						oi.usuario = request.user
+						oi.importe = retiro.importe
+						oi.comentario = retiro.comentario
+						oi.caja = "A"
+						oi.ocaja = caja_destino
+						oi.save()
 
-					tes = Traspaso_Entre_Sucursales()
-					tes.retiro = retiro
-					tes.ingreso = oi
-					tes.save()
+						tes = Traspaso_Entre_Sucursales()
+						tes.retiro = retiro
+						tes.ingreso = oi
+						tes.save()
+				
 	else:
 
 		try:
@@ -6351,20 +6421,38 @@ def api_envia_token(request):
 	importe = request.GET.get("importe")
 	comentarios = request.GET.get("comentarios")
 	token = request.GET.get("token")
+	id_tipo_retiro = request.GET.get("id_tipo_retiro")
+	id_socio = request.GET.get("id_socio")
 	id_concepto = request.GET.get("id_concepto")
 
-	
+	print(id_tipo_retiro)
+
 	obj_token = Token.objects.get(token = int(token))
-	obj_token.aux_1 = id_concepto
+
+	if id_tipo_retiro == "1":
+		obj_token.aux_1 = id_concepto
+		concepto = Concepto_Retiro.objects.get(id = int(id_concepto))
+	if id_tipo_retiro == "2":
+		obj_token.aux_1 = id_socio
+		socio = Socio.objects.get(id = int(id_socio))
+		
+	obj_token.aux_2 = id_tipo_retiro
+
 	obj_token.save()
 
-	concepto = Concepto_Retiro.objects.get(id = int(id_concepto))
 	
 	respuesta=[]
 	if request.method=="GET":
-		html="<html><head></head><body>"
-		html=html+"El usuario "+ usuario+ " de la sucursal <strong>"+sucursal+ "</strong> en la <strong> caja "+caja +" </strong>, solicita tu autorizacion para realizar un retiro de efectivo. <br><br>Importe: <strong> $"+str(importe)+ ".00</strong> <br><br>Concepto: <strong>"+concepto.concepto+"</strong><br><br>Comentario: <strong> "+comentarios+"</strong>.<br><br><br>Folio de Autorizacion: "+token
-		html=html+"</body></html>"
+		html = "<html><head></head><body>"
+		html = html+"El usuario "+ usuario+ " de la sucursal <strong>"+sucursal+ "</strong> en la <strong> caja "+caja +" </strong>, solicita tu autorizacion para realizar un retiro de efectivo. <br><br>Importe: <strong> $"+str(importe)+ ".00</strong>" 
+		if id_tipo_retiro == "1":
+			html = html + "<br><br>Concepto: <strong>"+concepto.concepto+"</strong><br><br>"
+		if id_tipo_retiro == "2":	
+			html = html + "<br><br>Concepto: <strong>Pago socio</strong>"
+			html = html + "<br><br>Socio: <strong>"+socio.nombre+"</strong><br><br>"
+
+		html = html + "Comentario: <strong> "+comentarios+"</strong>.<br><br><br>Folio de Autorizacion: "+token
+		html = html+"</body></html>"
 
 
 		html = html.replace("\xa1", "")
@@ -6524,10 +6612,10 @@ def api_consulta_corte_caja(request):
 	else:
 		importe_rebol=int(sum_importe_rebol["importe__sum"])
 
-	#buscamos los retiros
+	#buscamos los retiros (gastos)
 	try:
-		ret=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1).aggregate(Sum('importe'))
-		cont_retiros=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1).count()
+		ret=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 1).aggregate(Sum('importe'))
+		cont_retiros=Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 1).count()
 		total_movs=total_movs+cont_retiros #sumamos el total de retiros al total de movimientos
 		if ret["importe__sum"]!=None:
 			retiros=ret["importe__sum"]
@@ -6535,6 +6623,17 @@ def api_consulta_corte_caja(request):
 		print(e)
 		print("No tiene otros ingresos.")
 
+	#buscamos los retiros (Pago a socios)
+	try:
+		ret_socios = Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 2).aggregate(Sum('importe'))
+		cont_retiros_socios = Retiro_Efectivo.objects.filter(ocaja = caja,activo = 1,tipo_retiro__id = 2).count()
+		total_movs = total_movs+cont_retiros_socios #sumamos el total de retiros al total de movimientos
+		if ret["importe__sum"]!=None:
+			retiros_socios=ret_socios["importe__sum"]
+	except Exception as e:
+		print(e)
+		print("No tiene retiros para socios.")
+	
 	try:
 		emp=Boleta_Empeno.objects.filter(caja=caja).aggregate(Sum("mutuo_original"))
 		cont_empenos=Boleta_Empeno.objects.filter(caja=caja).exclude(estatus__id = 2).count()
@@ -6696,7 +6795,7 @@ def api_consulta_corte_caja(request):
 
 	total_efectivo=0.00
 
-	total_efectivo=decimal.Decimal(imp_fondo_inicial)+decimal.Decimal(importe_apartado)+decimal.Decimal(otros_ingresos)-decimal.Decimal(retiros)-decimal.Decimal(empenos)+decimal.Decimal(refrendos_pg)+decimal.Decimal(comisiones_pg)+decimal.Decimal(importe_refrendo)+decimal.Decimal(pago_capital)+decimal.Decimal(importe_desemp)+decimal.Decimal(importe_rebol)+decimal.Decimal(importe_ventas)
+	total_efectivo=decimal.Decimal(imp_fondo_inicial)+decimal.Decimal(importe_apartado)+decimal.Decimal(otros_ingresos)-decimal.Decimal(retiros) - decimal.Decimal(retiros_socios)-decimal.Decimal(empenos)+decimal.Decimal(refrendos_pg)+decimal.Decimal(comisiones_pg)+decimal.Decimal(importe_refrendo)+decimal.Decimal(pago_capital)+decimal.Decimal(importe_desemp)+decimal.Decimal(importe_rebol)+decimal.Decimal(importe_ventas)
 
 	caja.teorico_efectivo=total_efectivo
 	caja.save()
@@ -6739,8 +6838,9 @@ def api_consulta_corte_caja(request):
 	importe_apartado="{:0,.2f}".format(importe_apartado)
 	empenos = 	"$"+"{:0,.2f}".format(empenos)
 	retiros = "{:0,.2f}".format(retiros)
+	retiros_socios = "{:0,.2f}".format(retiros_socios)
 	txt_total_efectivo = "{:0,.2f}".format(total_efectivo)
-	respuesta.append({'cont_ab_apartado':cont_ab_apartado,'importe_apartado':importe_apartado,'nombre_cajero':caja.usuario.first_name+' '+caja.usuario.last_name,'estatus_guardado':caja.estatus_guardado,'dia_valido':dia_valido,'caja_abierta':caja_abierta,'token':str(token),'estatus':1,'fondo_inicial':str(imp_fondo_inicial),'cont_fondo_inicial':'1','otros_ingresos':str(otros_ingresos),'cont_otros_ingresos':str(cont_otros_ingresos),'retiros':str(retiros),'cont_retiros':str(cont_retiros),'total_movs':str(total_movs),'total_efectivo':str(total_efectivo),'real_efectivo':caja.real_efectivo,'empenos':str(empenos),'cont_empenos':str(cont_empenos),'cont_refrendos':str(cont_refrendos),'cont_com_pg':str(cont_com_pg),'cont_ref_pg':str(cont_ref_pg),'importe_refrendo':str(importe_refrendo),'comisiones_pg':str(comisiones_pg),'refrendos_pg':str(refrendos_pg),'cont_pc':cont_pc,		'pago_capital':pago_capital,"importe_desemp":importe_desemp,"cont_desemp":cont_desemp,"importe_rebol":importe_rebol,"cont_rebol":cont_rebol,'importe_ventas':importe_ventas,'cont_ventas':cont_ventas,"sucursal":caja.sucursal.sucursal,"txt_total_efectivo":txt_total_efectivo,"f_otros_ingresos":f_otros_ingresos,"f_importe_refrendo":f_importe_refrendo,"f_comisiones_pg":f_comisiones_pg,"f_pago_capital":f_pago_capital,"f_importe_desemp":f_importe_desemp,"f_importe_rebol":f_importe_rebol,"f_importe_ventas":f_importe_ventas,"f_importe_apartado":f_importe_apartado,"f_retiros":f_retiros,"f_empenos":f_empenos,"f_total_efectivo":f_total_efectivo})	
+	respuesta.append({'cont_ab_apartado':cont_ab_apartado,'importe_apartado':importe_apartado,'nombre_cajero':caja.usuario.first_name+' '+caja.usuario.last_name,'estatus_guardado':caja.estatus_guardado,'dia_valido':dia_valido,'caja_abierta':caja_abierta,'token':str(token),'estatus':1,'fondo_inicial':str(imp_fondo_inicial),'cont_fondo_inicial':'1','otros_ingresos':str(otros_ingresos),'cont_otros_ingresos':str(cont_otros_ingresos),'retiros':str(retiros),'cont_retiros':str(cont_retiros),'retiros_socios':str(retiros_socios),'cont_retiros_socios':str(cont_retiros_socios),'total_movs':str(total_movs),'total_efectivo':str(total_efectivo),'real_efectivo':caja.real_efectivo,'empenos':str(empenos),'cont_empenos':str(cont_empenos),'cont_refrendos':str(cont_refrendos),'cont_com_pg':str(cont_com_pg),'cont_ref_pg':str(cont_ref_pg),'importe_refrendo':str(importe_refrendo),'comisiones_pg':str(comisiones_pg),'refrendos_pg':str(refrendos_pg),'cont_pc':cont_pc,		'pago_capital':pago_capital,"importe_desemp":importe_desemp,"cont_desemp":cont_desemp,"importe_rebol":importe_rebol,"cont_rebol":cont_rebol,'importe_ventas':importe_ventas,'cont_ventas':cont_ventas,"sucursal":caja.sucursal.sucursal,"txt_total_efectivo":txt_total_efectivo,"f_otros_ingresos":f_otros_ingresos,"f_importe_refrendo":f_importe_refrendo,"f_comisiones_pg":f_comisiones_pg,"f_pago_capital":f_pago_capital,"f_importe_desemp":f_importe_desemp,"f_importe_rebol":f_importe_rebol,"f_importe_ventas":f_importe_ventas,"f_importe_apartado":f_importe_apartado,"f_retiros":f_retiros,"f_empenos":f_empenos,"f_total_efectivo":f_total_efectivo})	
 	
 	#agregamos una segunda lina con la informacion guardada ne el corte de caja	
 	respuesta.append({'comentario':caja.comentario,'centavos_10':caja.centavos_10,'centavos_50':caja.centavos_50,'pesos_1':caja.pesos_1,'pesos_2':caja.pesos_2,'pesos_5':caja.pesos_5,'pesos_10':caja.pesos_10,'pesos_20':caja.pesos_20,'pesos_50':caja.pesos_50,'pesos_100':caja.pesos_100,'pesos_200':caja.pesos_200,'pesos_500':caja.pesos_500,'pesos_1000':caja.pesos_1000,'diferencia':caja.diferencia,'real_efectivo':caja.real_efectivo})

@@ -30,7 +30,7 @@ class Otros_Ingresos_Form(forms.ModelForm):
 class Retiro_Efectivo_Form(forms.ModelForm):
 	class Meta:
 		model=Retiro_Efectivo
-		fields=('tipo_movimiento','importe','comentario','token','concepto',)
+		fields=('tipo_movimiento','importe','comentario','token','concepto','socio',)
 
 class Alta_Concepto_Retiro_Form(forms.Form):
 	sucursal = forms.ModelChoiceField(queryset = Sucursal.objects.all())

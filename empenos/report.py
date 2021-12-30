@@ -1575,7 +1575,8 @@ def imprime_comprobante_retiro(request,id):
 
 	p=canvas.Canvas(buffer,pagesize=A4)
 
-	p.drawImage(settings.IP_LOCAL+'/static/img/logo.jpg', 55, 730,200, 60)
+	
+	#p.drawImage(settings.IP_LOCAL+'/static/img/logo.jpg', 55, 730,200, 60)
 
 	p.setFont("Helvetica-Bold",15)
 
@@ -1596,6 +1597,8 @@ def imprime_comprobante_retiro(request,id):
 	concepto = ""
 	if obj.concepto != None:
 		concepto = obj.concepto.concepto
+	if obj.socio != None:
+		concepto = "Pago utilidades a " + obj.socio.nombre
 
 	p.drawString(155,row_act + 5,concepto)
 	p.line(55,row_act,545,row_act)
