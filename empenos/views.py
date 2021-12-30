@@ -6566,6 +6566,10 @@ def api_consulta_corte_caja(request):
 	retiros=0.00
 	empenos=0.00
 	cont_retiros=0
+	retiros_socios=0.00
+
+	cont_retiros_socios=0
+	
 	total_movs=1
 	caja_abierta=0#1 indica que la caja esta abiera; 0 indica que esta cerrada
 	try:
