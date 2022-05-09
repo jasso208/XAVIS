@@ -1333,6 +1333,9 @@ function fn_change_tipo_prod(){
 
 	$("#txt_observaciones").val("");														
 
+	$("#btn_form_agregar_sub_linea").hide();
+	$("#btn_form_agregar_marca").hide();
+
 }
 
 //funciones
@@ -1548,8 +1551,8 @@ function fn_change_tipo_prod(){
 			        		}
 			        		
 			        		$("#fondo_form_emergente").show();
-							$("#id_tipo_producto").val("1");
-							fn_change_tipo_prod();
+							//$("#id_tipo_producto").val("1");
+							//fn_change_tipo_prod();
 							$(".cls_form_emergente").show();
 			        	}
 			        	$("#fondo_preloader").hide();
@@ -1623,6 +1626,7 @@ function fn_change_tipo_prod(){
 			        	if (id_tipo_producto.toString()=="1" || id_tipo_producto.toString()=="2")
 			        	{
 			        		$("#id_linea").val(id_tipo_producto.toString());
+
 			        		fn_carga_sublinea(id_tipo_producto.toString());
 			        			$('#id_linea').prop("disabled",true);
 								$("#btn_form_agregar_linea").hide();
