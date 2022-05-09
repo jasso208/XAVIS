@@ -91,6 +91,9 @@ urlpatterns=[
 	url(r'^api_guarda_estatus_cartera/$',api_guarda_estatus_cartera),		
 	url(r'^api_notificacion_cajas_abiertas/$',api_notificacion_cajas_abiertas,name="api_notificacion_cajas_abiertas"),
 	url(r'^api_agrega_marca/$',api_agrega_marca,name="api_agrega_marca"),
+ 	url(r'^api_agrega_linea/$',api_agrega_linea,name="api_agrega_linea"),
+ 	url(r'^api_agrega_sub_linea/$',api_agrega_sub_linea,name="api_agrega_sub_linea"),
+ 
 	url(r'^api_elimina_costo_extra/$',api_elimina_costo_extra,name="api_elimina_costo_extra"),
 	url(r'^api_elimina_costo_kilataje/$',api_elimina_costo_kilataje,name="api_elimina_costo_kilataje"),
 	url(r'^api_agregar_kilataje/$',api_agregar_kilataje,name="api_agregar_kilataje"),

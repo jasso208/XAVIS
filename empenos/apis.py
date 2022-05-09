@@ -1015,6 +1015,45 @@ def api_agrega_marca(request):
 		respuesta.append({"estatus":"0","msj":"Error al registrar la marca."})
 	return Response(respuesta)
 
+@api_view(['GET'])
+def api_agrega_linea(request):
+	respuesta=[]
+	try:
+		linea = request.GET.get("linea").upper()
+		m = Linea.objects.filter(linea = linea)		
+		if m.exists():
+			print("la linea ya existe")
+			respuesta.append({"estatus":"0","msj":"La linea ya existe."})
+		else:
+			Linea.objects.create(linea = linea,tipo_producto = Tipo_Producto.objects.get(id=3))
+		respuesta.append({"estatus":"1"})
+	except Exception as e:		
+		print(e)
+		respuesta.append({"estatus":"0","msj":"Error al registrar la linea."})
+	return Response(respuesta)
+
+
+@api_view(['GET'])
+def api_agrega_sub_linea(request):
+	respuesta=[]
+	try:
+		linea = request.GET.get("linea").upper()
+		sub_linea = request.GET.get("sub_linea").upper()
+  
+		m = Linea.objects.get(id = linea)		
+		sl = Sub_Linea.objects.filter(linea = m,sub_linea=sub_linea)
+  
+		if sl.exists():
+			print("la sublinea linea ya existe")
+			respuesta.append({"estatus":"0","msj":"La sublinea ya existe."})
+		else:
+			Sub_Linea.objects.create(linea = m,sub_linea = sub_linea)
+		respuesta.append({"estatus":"1"})
+	except Exception as e:		
+		print(e)
+		respuesta.append({"estatus":"0","msj":"Error al registrar la sublinea."})
+	return Response(respuesta)
+
 
 @api_view(['GET'])
 def api_notificacion_cajas_abiertas(request):

@@ -625,6 +625,51 @@
 					<br><br>
 				</div>
 	</div>
+
+
+	<div class="cls_fondo_form_emergente_2 cls_agregar_linea" id="fondo_agregar_linea">
+		
+	</div>
+	<div class="cls_form_emergente_2 cls_agregar_linea"  style="overflow: visible;top:15%">
+				<div class="cls_encabezado_alert" >
+					<label>Agregar linea</label>
+				</div>
+				<div class="col-xs-12">	
+				<br>				
+					<input type="text" name="" id="txt_linea" clasS="form-control" placeholder="Linea">
+						<div class="help-block" id="id_error_linea_2">
+								<span id="error_linea"></span>
+						</div>
+				</div>
+				<div class="col-xs-12 text-center">	
+					<a class="btn btn-primary btn-sm" id="btn_guardar_linea" ><span class="glyphicon glyphicon-ok"></span> Guardar</a>
+					<br><br>
+				</div>
+	</div>
+
+
+
+	<div class="cls_fondo_form_emergente_2 cls_agregar_sub_linea" id="fondo_agregar_sub_linea">
+		
+	</div>
+	<div class="cls_form_emergente_2 cls_agregar_sub_linea"  style="overflow: visible;top:15%">
+				<div class="cls_encabezado_alert" >
+					<label>Agregar sub linea</label>
+				</div>
+				<div class="col-xs-12">	
+				<br>				
+					<input type="text" name="" id="txt_sub_linea" clasS="form-control" placeholder="Sub linea">
+						<div class="help-block" id="id_error_sub_linea_2">
+								<span id="error_sub_linea"></span>
+						</div>
+				</div>
+				<div class="col-xs-12 text-center">	
+					<a class="btn btn-primary btn-sm" id="btn_guardar_sub_linea" ><span class="glyphicon glyphicon-ok"></span> Guardar</a>
+					<br><br>
+				</div>
+	</div>
+
+
 	<div class="  cls_form_emergente ">
 				<div class="cls_encabezado_alert" >
 					<label>Cotizar Producto	</label>
@@ -643,22 +688,46 @@
 					</div>				
 				</div>
 				<div class="col-xs-12">
-					<label for="">Linea</label>					
-					<select name="sucursal" class="form-control" title="" required="" id="id_linea">
-					  
-					</select>	
-					<div class="help-block" id="id_error_linea">
-						Debe indicar una linea valida.
-					</div>				
+		
+					<div class="col-xs-8" style="padding: 0">
+						<label for="">Linea</label>					
+						<select name="sucursal" class="form-control" title="" required="" id="id_linea">
+						  
+						</select>	
+						<div class="help-block" id="id_error_linea">
+							Debe indicar una linea valida.
+						</div>				
+	
+ 
+					</div>
+					<div class="col-xs-4">
+						<br>
+						<a id="btn_form_agregar_linea" class="btn btn-default btn-sm" style="margin-top: 5px"><span class="glyphicon glyphicon-plus"></span>Agregar</a>
+					</div>
+				
+
+
 				</div>
 				<div class="col-xs-12">
-					<label for="">Sub Linea</label>					
-					<select name="sucursal" class="form-control" title="" required="" id="id_sublinea">
-					  
-					</select>	
-					<div class="help-block" id="id_error_sublinea">
-						Debe indicar una sublinea valida.
-					</div>					
+					
+
+
+
+					<div class="col-xs-8" style="padding: 0">
+						<label for="">Sub Linea</label>					
+						<select name="sucursal" class="form-control" title="" required="" id="id_sublinea">
+						
+						</select>	
+						<div class="help-block" id="id_error_sublinea">
+							Debe indicar una sublinea valida.
+						</div>					 
+					</div>
+					<div class="col-xs-4">
+						<br>
+						<a id="btn_form_agregar_sub_linea" class="btn btn-default btn-sm" style="margin-top: 5px"><span class="glyphicon glyphicon-plus"></span>Agregar</a>
+					</div>
+				
+
 				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-8" style="padding: 0">
@@ -1034,35 +1103,7 @@ $("#btn_error_plazo").click(
 				$("#id_tipo_producto").change(
 						function()
 						{
-							fn_oculta_errores();
-
-							fn_carga_linea($("#id_tipo_producto").val());
-
-							$('#id_kilataje').empty();
-							$("#id_peso").val("0");
-							$("#id_avaluo").val("0");
-							$("#id_mutuo_sugerido").val("0");
-							$("#id_mutuo").val("0");
-							//si es oro o plata
-							if ($("#id_tipo_producto").val()=="1" || $("#id_tipo_producto").val()=="2")
-							{
-								$("#id_kilataje,#id_peso").prop("disabled",false);
-								fn_carga_kilataje( $("#id_tipo_producto").val());	
-								$("#id_avaluo").prop("disabled",true);
-								$("#txt_observaciones").prop("readonly",true)
-
-								
-							}
-							else
-							{
-								$("#id_avaluo").prop("disabled",false);
-								$("#id_avaluo").prop("readonly",false);
-								$("#id_kilataje,#id_peso").prop("disabled",true);								
-								$("#txt_observaciones").prop("readonly",false)
-							}
-
-							$("#txt_observaciones").val("");														
-
+							fn_change_tipo_prod();
 						}
 					);
 
@@ -1170,7 +1211,23 @@ $("#btn_error_plazo").click(
 							
 						}
 					);
-				$("#fondo_agregar_marca").click(
+
+					$("#btn_guardar_linea").click(
+						function()
+						{
+							fn_guardar_linea();
+							
+						}
+					);
+					$("#btn_guardar_sub_linea").click(
+						function()
+						{
+							fn_guardar_sub_linea();
+							
+						}
+					);
+
+					$("#fondo_agregar_marca").click(
 						function()
 						{
 
@@ -1181,8 +1238,44 @@ $("#btn_error_plazo").click(
 						function()
 						{
 							$(".cls_agregar_marca").show();	
+							$("#txt_marca").val("");
 						}
 					);
+
+
+
+				$("#fondo_agregar_sub_linea").click(
+						function()
+						{
+
+							$(".cls_agregar_sub_linea").hide();	
+						}
+					);
+
+				$("#btn_form_agregar_sub_linea").click(
+						function()
+						{
+							$(".cls_agregar_sub_linea").show();	
+							$("#txt_sub_linea").val("");
+						}
+					);
+
+
+					$("#fondo_agregar_linea").click(
+						function()
+						{
+
+							$(".cls_agregar_linea").hide();	
+						}
+					);
+				$("#btn_form_agregar_linea").click(
+						function()
+						{
+							$(".cls_agregar_linea").show();	
+							$("#txt_linea").val("");
+						}
+					);
+
 				$("#txt_marca").change(
 						function()
 						{
@@ -1203,13 +1296,44 @@ $("#btn_error_plazo").click(
 //**********************************************************************************************
 
 
-				
-
 
 //**********************************************************************************************
 //**********************************************************************************************
 				}
 			);
+
+
+function fn_change_tipo_prod(){
+	fn_oculta_errores();
+
+	fn_carga_linea($("#id_tipo_producto").val());
+
+	$('#id_kilataje').empty();
+	$("#id_peso").val("0");
+	$("#id_avaluo").val("0");
+	$("#id_mutuo_sugerido").val("0");
+	$("#id_mutuo").val("0");
+	//si es oro o plata
+	if ($("#id_tipo_producto").val()=="1" || $("#id_tipo_producto").val()=="2")
+	{
+		$("#id_kilataje,#id_peso").prop("disabled",false);
+		fn_carga_kilataje( $("#id_tipo_producto").val());	
+		$("#id_avaluo").prop("disabled",true);
+		$("#txt_observaciones").prop("readonly",true)
+
+		
+	}
+	else
+	{
+		$("#id_avaluo").prop("disabled",false);
+		$("#id_avaluo").prop("readonly",false);
+		$("#id_kilataje,#id_peso").prop("disabled",true);								
+		$("#txt_observaciones").prop("readonly",false)
+	}
+
+	$("#txt_observaciones").val("");														
+
+}
 
 //funciones
 //**********************************************************************************************
@@ -1234,6 +1358,13 @@ $("#btn_error_plazo").click(
 				$(".cls_agregar_marca").hide();	
 				$("#id_error_marca_2").hide();
 				
+				$(".cls_agregar_linea").hide();	
+				;	
+				$("#id_error_linea_2").hide();
+
+
+				$(".cls_agregar_sub_linea").hide();	
+				$("#id_error_sub_linea_2").hide();
 				
 
 
@@ -1417,6 +1548,8 @@ $("#btn_error_plazo").click(
 			        		}
 			        		
 			        		$("#fondo_form_emergente").show();
+							$("#id_tipo_producto").val("1");
+							fn_change_tipo_prod();
 							$(".cls_form_emergente").show();
 			        	}
 			        	$("#fondo_preloader").hide();
@@ -1492,10 +1625,13 @@ $("#btn_error_plazo").click(
 			        		$("#id_linea").val(id_tipo_producto.toString());
 			        		fn_carga_sublinea(id_tipo_producto.toString());
 			        			$('#id_linea').prop("disabled",true);
+								$("#btn_form_agregar_linea").hide();
 			        		}
 			        		else
 			        		{
 			        			$('#id_linea').prop("disabled",false);
+
+								$("#btn_form_agregar_linea").show();
 			        		}
 
 			        	$("#fondo_preloader").hide();
@@ -1557,10 +1693,14 @@ $("#btn_error_plazo").click(
 			        		$("#id_sublinea").val(id_linea.toString());
 			        		fn_carga_marca();
 			        			$('#id_sublinea').prop("disabled",true);
+
+								$("#btn_form_agregar_sub_linea").hide();
 			        		}
 			        		else
 			        		{
 			        			$('#id_sublinea').prop("disabled",false);
+
+								$("#btn_form_agregar_sub_linea").show();
 			        		}
 
 
@@ -1619,10 +1759,14 @@ $("#btn_error_plazo").click(
 			        		{
 			        			$('#id_marca').val("1");
 			        			$('#id_marca').prop("disabled",true);
+
+								$("#btn_form_agregar_marca").hide();
 			        		}
 			        		else
 			        		{
 			        			$('#id_marca').prop("disabled",false);
+
+								$("#btn_form_agregar_marca").show();
 			        		}
 
 
@@ -2267,24 +2411,149 @@ function fn_guardar_marca()
 			        		}
 			        		$(".cls_agregar_marca").hide();
 
+
 			        	}
+
+						$("#fondo_preloader").hide();
 						
-			        	$("#fondo_preloader").hide();
 			        },
 			        error: function (r) {
 			        		$("#id_error_marca_2").show();
 			        		$("#error_marca").text("Error al registrar la marca.");
 			        		$(".cls_agregar_marca").hide();
+
+							
 			        },
 			        failure: function (r) {
 			        		$("#id_error_marca_2").show();
 			        		$("#error_marca").text("Error al registrar la marca.");
 			        		$(".cls_agregar_marca").hide();
+
+							
 			        }
 				});
 
 	
 }
+
+//**********************************************************************************************
+//**********************************************************************************************
+
+function fn_guardar_linea()
+{
+
+	$("#fondo_preloader").show();
+				$.ajax({
+					type: "GET",
+			        url: "{{IP_LOCAL}}/empenos/api_agrega_linea/",
+			        data: {
+						"linea":$("#txt_linea").val()
+			        },
+			        contentType: "application/json; charset=utf-8",
+			        dataType: "json",
+			        success: function (r) {
+			        	
+			        	//fallo
+			        	if (r[0].estatus=="0")
+			        	{			        		
+
+							$("#id_error_linea_2").show();
+							$("#error_linea").text(r[0].msj);
+			        	}
+			        	else//todo correcto
+			        	{
+			        		$("#id_error_linea_2").hide();
+
+			        		if($("#id_tipo_producto").val() != "")
+			        		{
+			        			fn_carga_linea($("#id_tipo_producto").val());
+			        		}
+
+			        		$(".cls_agregar_linea").hide();
+
+			        	}
+						
+			        	$("#fondo_preloader").hide();
+			        },
+			        error: function (r) {
+			        		$("#id_error_linea_2").show();
+			        		$("#error_linea").text("Error al registrar la linea.");
+			        		$(".cls_agregar_linea").hide();
+							$("#fondo_preloader").hide();
+
+			        },
+			        failure: function (r) {
+			        		$("#id_error_linea_2").show();
+			        		$("#error_linea").text("Error al registrar la linea.");
+			        		$(".cls_agregar_linea").hide();
+
+							$("#fondo_preloader").hide();
+			        }
+				});
+
+	
+}
+
+
+//**********************************************************************************************
+//**********************************************************************************************
+
+function fn_guardar_sub_linea()
+{
+
+	$("#fondo_preloader").show();
+				$.ajax({
+					type: "GET",
+			        url: "{{IP_LOCAL}}/empenos/api_agrega_sub_linea/",
+			        data: {
+						"linea":$("#id_linea").val() ,
+						"sub_linea":$("#txt_sub_linea").val()
+			        },
+			        contentType: "application/json; charset=utf-8",
+			        dataType: "json",
+			        success: function (r) {
+			        	
+			        	//fallo
+			        	if (r[0].estatus=="0")
+			        	{			        		
+
+							$("#id_error_sub_linea_2").show();
+							$("#error_sub_linea").text(r[0].msj);
+			        	}
+			        	else//todo correcto
+			        	{
+			        		$("#id_error_sub_linea_2").hide();
+
+			        		if($("#id_linea").val() != "")
+			        		{
+			        			fn_carga_sublinea($("#id_linea").val());
+			        		}
+
+			        		$(".cls_agregar_sub_linea").hide();
+
+			        	}
+						
+			        	$("#fondo_preloader").hide();
+			        },
+			        error: function (r) {
+			        		$("#id_error_sub_linea_2").show();
+			        		$("#error_sub_linea").text("Error al registrar la sub linea.");
+			        		$(".cls_agregar_sub_linea").hide();
+							$("#fondo_preloader").hide();
+
+			        },
+			        failure: function (r) {
+			        		$("#id_error_sub_linea_2").show();
+			        		$("#error_sub_linea").text("Error al registrar la sub linea.");
+			        		$(".cls_agregar_sub_linea").hide();
+
+							$("#fondo_preloader").hide();
+			        }
+				});
+
+	
+}
+
 
 	</script>
 
