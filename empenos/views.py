@@ -6830,8 +6830,8 @@ def api_consulta_corte_caja(request):
 	total_efectivo=0.00
 
 
-	if fondo_inicial == None:
-		fondo_inicial = 0
+	if imp_fondo_inicial == None:
+		imp_fondo_inicial = 0
 	if importe_apartado == None:
 		importe_apartado = 0
 	if otros_ingresos == None:
