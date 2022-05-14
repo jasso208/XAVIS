@@ -3301,6 +3301,35 @@ def retiro_efectivo(request):
 	
 
 	#total=fondo_inicial+otros_ingresos-retiros_caja
+	if fondo_inicial == None:
+		fondo_inicial = 0
+	if importe_apartado == None:
+		importe_apartado = 0
+	if otros_ingresos == None:
+		otros_ingresos = 0
+	if retiros == None:
+		retiros = 0
+	if retiros_socios == None:
+		retiros_socios = 0
+	if retiros_socios == None:
+		retiros_socios = 0  
+	if empenos == None:
+		empenos = 0  
+	if pago_capital	 == None:
+		pago_capital	= 0  
+	if comisiones_pg	 == None:
+		comisiones_pg	= 0  
+	if refrendos_pg	 == None:
+		refrendos_pg	= 0    	
+	if importe_refrendo	 == None:
+		importe_refrendo	= 0  
+	if importe_rebol	 == None:
+		importe_rebol	= 0  
+	if importe_desemp	 == None:
+		importe_desemp	= 0  
+	if importe_ventas	 == None:
+		importe_ventas	= 0  
+  
 	total_efectivo=decimal.Decimal(fondo_inicial)+decimal.Decimal(importe_apartado)+decimal.Decimal(otros_ingresos)-decimal.Decimal(retiros)-decimal.Decimal(retiros_socios)-decimal.Decimal(empenos)+decimal.Decimal(pago_capital)+decimal.Decimal(comisiones_pg)+decimal.Decimal(refrendos_pg)+decimal.Decimal(importe_refrendo)+decimal.Decimal(importe_rebol)+decimal.Decimal(importe_desemp)+decimal.Decimal(importe_ventas)
 
 	#es la clave para retiros de caja.
@@ -6799,6 +6828,37 @@ def api_consulta_corte_caja(request):
 	total_movs=int(total_movs+cont_ab_apartado+cont_com_pg+refrendos_pg+cont_pc+cont_refrendos+cont_desemp+cont_rebol+cont_ventas)
 
 	total_efectivo=0.00
+
+
+	if fondo_inicial == None:
+		fondo_inicial = 0
+	if importe_apartado == None:
+		importe_apartado = 0
+	if otros_ingresos == None:
+		otros_ingresos = 0
+	if retiros == None:
+		retiros = 0
+	if retiros_socios == None:
+		retiros_socios = 0
+	if retiros_socios == None:
+		retiros_socios = 0  
+	if empenos == None:
+		empenos = 0  
+	if pago_capital	 == None:
+		pago_capital	= 0  
+	if comisiones_pg	 == None:
+		comisiones_pg	= 0  
+	if refrendos_pg	 == None:
+		refrendos_pg	= 0    	
+	if importe_refrendo	 == None:
+		importe_refrendo	= 0  
+	if importe_rebol	 == None:
+		importe_rebol	= 0  
+	if importe_desemp	 == None:
+		importe_desemp	= 0  
+	if importe_ventas	 == None:
+		importe_ventas	= 0  
+  
 
 	total_efectivo=decimal.Decimal(imp_fondo_inicial)+decimal.Decimal(importe_apartado)+decimal.Decimal(otros_ingresos)-decimal.Decimal(retiros) - decimal.Decimal(retiros_socios)-decimal.Decimal(empenos)+decimal.Decimal(refrendos_pg)+decimal.Decimal(comisiones_pg)+decimal.Decimal(importe_refrendo)+decimal.Decimal(pago_capital)+decimal.Decimal(importe_desemp)+decimal.Decimal(importe_rebol)+decimal.Decimal(importe_ventas)
 
