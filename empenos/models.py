@@ -1115,7 +1115,7 @@ class Boleta_Empeno(models.Model):
 
 				# dividimo el nuevo importe para desempeno entre el numero de pagos pendientes
 				pagos = Pagos.objects.filter(boleta = self,pagado = "N").exclude(importe = 0)
-				nvo_importe = int(importe_desempeno/pagos.count())
+				nvo_importe = int(float(importe_desempeno)/float(pagos.count()))
 				if nvo_importe == 0:	
 					nvo_importe = 1
 

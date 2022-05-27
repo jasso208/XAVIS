@@ -96,7 +96,7 @@
 					Hay ocaciones en que se requiere desempeñar a un importe menor al que el sistema indica.
 					<br>
 					<br>
-					Esta opción nos permite forzar el desempeño de una boleta a un importe a criterio del cajero.
+					Esta opción nos permite actualizar el valor de los refrendos de una boleta a un importe a criterio del cajero, es decir el importe que aqui capture no afecta el mutuo de la boleta.
 					<br>
 					<br>
 					Es importante que solo se realice este movimiento cuando se esta seguro de que se va a desempeñar la boleta en el momento. Ya de lo contrario podria generar incongruencias en la boleta.
@@ -134,5 +134,20 @@
 
 			</div>
 	</div>
+
+
+
+
 	<!--**********************************************************************************-->
+
+
+	<script type="text/javascript">
+        $(document).ready(
+            function()
+            {
+                    inicio("{{csrf_token}}","{{request.user.username}}","{{IP_LOCAL}}");
+            }
+        );
+    </script>
+
     {% endblock %}

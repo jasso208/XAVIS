@@ -23,15 +23,15 @@ def api_forzar_desempeno(request):
 		folio_boleta = request.data["folio_boleta"]
 		id_sucursal = request.data["id_sucursal"]
 		nvo_importe = request.data["nvo_importe"]
-
-		boleta = Boleta_Empeno.objects.get(folio = folio_boleta,sucursa__id = id_sucursal)
+  
+		boleta = Boleta_Empeno.objects.get(folio = int(folio_boleta),sucursal__id = int(id_sucursal))
 
 		resp = boleta.forzar_desempeno(nvo_importe)
 
 		if resp[0]:
-			return Response(json.dumps({"estatus":"1"}))
+			return Response({"estatus":"1"})
 		else:
-			return Response(json.dumps({"estatus":"0","msj":resp[1]}))
+			return Response({"estatus":"0","msj":resp[1]})
 
 
 @api_view(["PUT"])
