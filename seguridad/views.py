@@ -477,6 +477,7 @@ def alta_usuario(request,id=None):
 		#obtenemos el objeto a editar
 		usr=User.objects.get(id=id)
 		is_edicion = "1"
+		is_e=True
 		encabezado = "Edicion del usuario: " + usr.username 
 
 		u2 = User_2.objects.get(user = usr)
@@ -490,6 +491,7 @@ def alta_usuario(request,id=None):
 
 	else:
 		is_edicion = "0"
+		is_e=False
 		encabezado = "Alta de usuario"
 
 	id_usuario = request.user.id

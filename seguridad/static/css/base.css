@@ -205,6 +205,8 @@ td
 .cls_boton_body span
 {
 	font-size: 25px;
+	
+	overflow: hidden;
 }
 .list-group> .active> a
 {
@@ -257,7 +259,7 @@ td
 	display: block;
 	text-align: center;
 	background-color: white;
-	font-size: 13px;
+	font-size: 11px;
 	width: 90%;
 	margin-left: 5%;
 	padding-top:20px;

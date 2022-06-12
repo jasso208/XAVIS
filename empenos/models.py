@@ -581,6 +581,9 @@ class User_2(models.Model):
 			usuario.is_active = True
 			usuario.save()
 
+			usuario.set_password("12345")
+			usuario.save()
+			
 			user_2 = User_2()
 			user_2.user = usuario
 			user_2.sucursal = Sucursal.objects.get(id = int(id_sucursal))

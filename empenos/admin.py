@@ -6,7 +6,7 @@ from .models import Abono,Imprime_Abono,Periodo,Tipo_Periodo,Tipo_Kilataje,Venta
 from .models import Venta_Temporal_Piso,Porcentaje_Sobre_Avaluo,Imprime_Venta_Piso,Venta_Piso,Det_Venta_Piso
 from .models import Estatus_Apartado,Abono_Apartado,Apartado,Imprime_Apartado,Concepto_Retiro,Configuracion_Interes_Empeno
 from .models import Pagos_No_Usados,Pagos_Com_Pg_No_Usados,Historico_Estatus_Cartera,Empresa,Min_Apartado,Configuracion_Contenido_Impresion
-from .models import Tipo_Retiro,Socio
+from .models import Tipo_Retiro,Socio,Porcentaje_Comision_PG 
 # Register your models here.
 
 
@@ -71,3 +71,4 @@ admin.site.register(Tipo_Retiro)
 admin.site.register(Socio)
 
 
+admin.site.register(Porcentaje_Comision_PG)
